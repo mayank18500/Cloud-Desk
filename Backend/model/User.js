@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import { ref } from "node:process";
 
 
 const UserSchema = new mongoose.Schema({
@@ -9,9 +10,9 @@ const UserSchema = new mongoose.Schema({
   role: { type: String, enum: ['interviewer','company'], required: true },
   bio: String,
   skills: [String],
-  pricing:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "PricingSchema" ,
+  pricing: {
+    type:mongoose.Schema.Types.ObjectId,
+    ref: "PricingSchema",
   },
   portfolio: [String],
   createdAt: { type: Date, default: Date.now }
