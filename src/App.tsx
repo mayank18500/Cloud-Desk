@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { MainLayout } from "@/layouts/MainLayout";
 
 // Pages
+import Register from "@/pages/Regiser";
 import LoginPage from "@/pages/LoginPage";
 import OnboardingPage from "@/pages/OnboardingPage";
 import NotFound from "@/pages/NotFound";
@@ -31,6 +32,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+          <Route path="/register" element={<Register />} />
             {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
