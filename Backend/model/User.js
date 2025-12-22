@@ -12,7 +12,10 @@ const UserSchema = new mongoose.Schema({
   role: { type: String, enum: ['interviewer','company'], required: true },
   bio: String,
   skills: [String],
-  pricing: PricingSchema,
+  pricing:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "PricingSchema" ,
+  },
   portfolio: [String],
   createdAt: { type: Date, default: Date.now }
 });
