@@ -1,9 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
 
-const PricingSchema = new mongoose.Schema({
-  hourlyRate: Number,
-});
 
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
