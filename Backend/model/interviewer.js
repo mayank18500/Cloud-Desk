@@ -32,9 +32,11 @@ const interviewerSchema = new Schema({
   },
   portfolio: {
     type: String,
+    required: true,
   },
   hourlyRate: {
-    type: String,
+    type: Money,
+    required: true,
   },
 }, { timestamps: true }); // Adds createdAt and updatedAt automatically
 
