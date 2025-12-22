@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from 'react';
 
 export type UserRole = 'company' | 'interviewer' | null;
 
@@ -6,8 +12,14 @@ interface User {
   id: string;
   email: string;
   name: string;
-  avatar?: string;
   role: UserRole;
+  profile?: any;
+}
+
+interface RegisterPayload {
+  name: string;
+  role: 'company' | 'interviewer';
+  profile: any;
 }
 
 interface AuthContextType {
@@ -16,36 +28,22 @@ interface AuthContextType {
   isAuthenticated: boolean;
   role: UserRole;
   login: (email: string, password: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    data: RegisterPayload
+  ) => Promise<void>;
   logout: () => void;
   setRole: (role: UserRole) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock users for demo purposes
-const mockUsers: Record<string, User> = {
-  'company@demo.com': {
-    id: '1',
-    email: 'company@demo.com',
-    name: 'Acme Corporation',
-    avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AC&backgroundColor=1e40af',
-    role: 'company',
-  },
-  'interviewer@demo.com': {
-    id: '2',
-    email: 'interviewer@demo.com',
-    name: 'Sarah Chen',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
-    role: 'interviewer',
-  },
-};
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored user
     const stored = localStorage.getItem('interview_platform_user');
     if (stored) {
       setUser(JSON.parse(stored));
@@ -53,40 +51,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
+  /* ---------------- LOGIN ---------------- */
   const login = async (email: string, _password: string) => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    const foundUser = mockUsers[email.toLowerCase()];
-    if (foundUser) {
-      setUser(foundUser);
-      localStorage.setItem('interview_platform_user', JSON.stringify(foundUser));
-    } else {
-      // Create a new user without role for onboarding
-      const newUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        email,
-        name: email.split('@')[0],
-        role: null,
-      };
-      setUser(newUser);
-      localStorage.setItem('interview_platform_user', JSON.stringify(newUser));
+    await new Promise((r) => setTimeout(r, 800));
+
+    const stored = localStorage.getItem('interview_platform_user');
+    if (!stored) {
+      setIsLoading(false);
+      throw new Error('User not found');
     }
+
+    const parsed = JSON.parse(stored);
+    if (parsed.email !== email) {
+      setIsLoading(false);
+      throw new Error('Invalid credentials');
+    }
+
+    setUser(parsed);
     setIsLoading(false);
   };
 
+  /* ---------------- REGISTER ---------------- */
+  const register = async (
+    email: string,
+    _password: string,
+    data: RegisterPayload
+  ) => {
+    setIsLoading(true);
+    await new Promise((r) => setTimeout(r, 800));
+
+    const newUser: User = {
+      id: crypto.randomUUID(),
+      email,
+      name: data.name,
+      role: data.role,
+      profile: data.profile,
+    };
+
+    setUser(newUser);
+    localStorage.setItem(
+      'interview_platform_user',
+      JSON.stringify(newUser)
+    );
+
+    setIsLoading(false);
+  };
+
+  /* ---------------- LOGOUT ---------------- */
   const logout = () => {
     setUser(null);
     localStorage.removeItem('interview_platform_user');
   };
 
+  /* ---------------- SET ROLE ---------------- */
   const setRole = (role: UserRole) => {
-    if (user) {
-      const updatedUser = { ...user, role };
-      setUser(updatedUser);
-      localStorage.setItem('interview_platform_user', JSON.stringify(updatedUser));
-    }
+    if (!user) return;
+    const updated = { ...user, role };
+    setUser(updated);
+    localStorage.setItem(
+      'interview_platform_user',
+      JSON.stringify(updated)
+    );
   };
 
   return (
@@ -97,6 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         role: user?.role || null,
         login,
+        register,
         logout,
         setRole,
       }}
@@ -107,9 +134,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error('useAuth must be used inside AuthProvider');
   }
-  return context;
+  return ctx;
 }
