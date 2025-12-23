@@ -14,18 +14,33 @@ export function MainLayout() {
     return <PageLoader />;
   }
 
+  // 🚫 Not logged in
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
 
-  // Redirect to onboarding if no role is set
+  // ✅ Allow onboarding page itself
+  if (location.pathname === '/onboarding') {
+    return <Outlet />;
+  }
+
+  // 🚀 Logged in but role not chosen → onboarding
   if (!role) {
     return <Navigate to="/onboarding" replace />;
   }
 
-  // Redirect to correct dashboard based on role
+  // 🏠 Redirect root to dashboard
   if (location.pathname === '/') {
-    return <Navigate to={role === 'company' ? '/company/dashboard' : '/interviewer/dashboard'} replace />;
+    return (
+      <Navigate
+        to={
+          role === 'company'
+            ? '/company/dashboard'
+            : '/interviewer/dashboard'
+        }
+        replace
+      />
+    );
   }
 
   return (

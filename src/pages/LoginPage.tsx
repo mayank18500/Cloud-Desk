@@ -171,22 +171,10 @@ export default function LoginPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                onClick={() => handleDemoLogin('company')}
-                disabled={isLoading}
-                className="text-company border-company/30 hover:bg-company/10"
-              >
-                Company Demo
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => handleDemoLogin('interviewer')}
-                disabled={isLoading}
-                className="text-interviewer border-interviewer/30 hover:bg-interviewer/10"
-              >
-                Interviewer Demo
-              </Button>
+                Don't have an Account?{' '}
+                <button onClick={() => navigate('/register')} className="text-primary underline">
+                  Register
+                </button>
             </div>
           </div>
         </div>
