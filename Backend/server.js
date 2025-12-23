@@ -2,12 +2,28 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import User from "./model/User.js";
+import MongoStore from "connect-mongo";
 
 dotenv.config();
 const app=express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const PORT=process.env.PORT || 5000;
+const dbUrl= process.env.MONGO_URL;
+
+
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto: {
+        secret: process.env.SECRET,
+    },
+    touchAfter: 24 * 3600,
+})
+
+store.on("error",()=>{
+    console.log("ERROR in MONGO SESSION STORE",err);
+})
+
 
 main()
     .then(()=>{
@@ -18,7 +34,7 @@ main()
         console.log(err);
     })
 async function main(){
-    await mongoose.connect("mongodb://127.0.0.1:27017/Cloud-Desk");
+    await mongoose.connect(dbUrl);
 };
 
 app.get("/",(req,res)=>{
