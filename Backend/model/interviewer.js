@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const interviewerSchema = new Schema({
   role: {
     type: String,
-    enum: ['interviewer'], 
+    enum: ['interviewer'], // Only interviewer for this schema
     default: 'interviewer',
     required: true,
   },
@@ -32,10 +32,12 @@ const interviewerSchema = new Schema({
   },
   portfolio: {
     type: String,
+    required: true,
   },
   hourlyRate: {
-    type: String,
+    type: Money,
+    required: true,
   },
-}, { timestamps: true }); 
+}, { timestamps: true }); // Adds createdAt and updatedAt automatically
 
 export default mongoose.model("Interviewer", interviewerSchema);

@@ -15,7 +15,7 @@ const companySchema = new Schema({
   companyName: { type: String, required: true },
   location: { type: String, required: true },
   website: { type: String },
-  hiringNeeds: { type: String },
+  hiringNeeds: { type: String, required: true},
 }, { timestamps: true });
 
 export default mongoose.model("Company", companySchema);
