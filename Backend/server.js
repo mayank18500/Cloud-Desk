@@ -6,6 +6,8 @@ import authRoutes from "./routes/authRoutes.js";
 import interviewerRoutes from "./routes/interviewerRoutes.js"; 
 import userRoutes from "./routes/userRoutes.js";
 import interviewRoutes from "./routes/interviewRoutes.js";
+import companyRoutes from "./routes/companyRoutes.js";
+
 
 dotenv.config();
 
@@ -27,9 +29,11 @@ app.get("/", (req, res) => {
 
 // API Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/interviewers", interviewerRoutes);
+//app.use("/api/interviewers", interviewerRoutes);
 app.use("/api/users", userRoutes);       // Add this
 app.use("/api/interviews", interviewRoutes);
+app.use("/api/companies", companyRoutes);
+app.use("/api/interviewer",interviewerRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
