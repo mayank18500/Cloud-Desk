@@ -88,7 +88,7 @@ export default function LoginPage() {
           </div>
         </div>
         <p className="text-white/50 text-sm">
-          © 2024 Intelligent Interviewer. All rights reserved.
+          © 2026 Intelligent Interviewer. All rights reserved.
         </p>
       </div>
 
@@ -165,14 +165,15 @@ export default function LoginPage() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or try a demo</span>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-card px-2 text-muted-foreground">
+                  Or continue with
+                </span>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-                Don't have an Account?{' '}
-                <button onClick={() => navigate('/register')} className="text-primary underline">
+            <div className="grid grid-cols-2 gap-3 justify-center">
+                <button onClick={() => navigate('/register')} className="text-primary underline mt-1 text-center md:col-span-2 md:justify-self-center">
                   Register
                 </button>
             </div>

@@ -39,6 +39,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Define API URL
+const API_URL = "http://localhost:5000/api/auth";
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,56 +55,90 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* ---------------- LOGIN ---------------- */
-  const login = async (email: string, _password: string) => {
+  const login = async (email: string, password: string) => {
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-
-    const stored = localStorage.getItem('interview_platform_user');
-    if (!stored) {
-      setIsLoading(false);
-      throw new Error('User not found');
+    
+    // DEMO BYPASS: Keep the demo login working for testing if you want
+    if (password === 'demo') {
+        const demoUser: User = {
+            id: 'demo-123',
+            email,
+            name: 'Demo User',
+            role: email.includes('company') ? 'company' : 'interviewer',
+            profile: {}
+        };
+        setUser(demoUser);
+        localStorage.setItem('interview_platform_user', JSON.stringify(demoUser));
+        setIsLoading(false);
+        return;
     }
 
-    const parsed = JSON.parse(stored);
-    if (parsed.email !== email) {
-      setIsLoading(false);
-      throw new Error('Invalid credentials');
-    }
+    try {
+      const response = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    setUser(parsed);
-    setIsLoading(false);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      setUser(data.user);
+      localStorage.setItem('interview_platform_user', JSON.stringify(data.user));
+      localStorage.setItem('token', data.token);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   /* ---------------- REGISTER ---------------- */
   const register = async (
     email: string,
-    _password: string,
+    password: string,
     data: RegisterPayload
   ) => {
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
+    try {
+      const response = await fetch(`${API_URL}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          name: data.name,
+          role: data.role,
+          profile: data.profile
+        }),
+      });
 
-    const newUser: User = {
-      id: crypto.randomUUID(),
-      email,
-      name: data.name,
-      role: data.role,
-      profile: data.profile,
-    };
+      const resData = await response.json();
 
-    setUser(newUser);
-    localStorage.setItem(
-      'interview_platform_user',
-      JSON.stringify(newUser)
-    );
+      if (!response.ok) {
+        throw new Error(resData.message || 'Registration failed');
+      }
 
-    setIsLoading(false);
+      setUser(resData.user);
+      localStorage.setItem('interview_platform_user', JSON.stringify(resData.user));
+      localStorage.setItem('token', resData.token);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   /* ---------------- LOGOUT ---------------- */
   const logout = () => {
     setUser(null);
     localStorage.removeItem('interview_platform_user');
+    localStorage.removeItem('token');
   };
 
   /* ---------------- SET ROLE ---------------- */

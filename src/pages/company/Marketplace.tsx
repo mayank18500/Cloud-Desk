@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { FilterBar } from '@/components/marketplace/FilterBar';
 import { InterviewerCard, Interviewer } from '@/components/marketplace/InterviewerCard';
 import { Button } from '@/components/ui/button';
@@ -14,87 +14,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { toast } from 'sonner';
-import { Users, Calendar as CalendarIcon } from 'lucide-react';
-
-// Mock data
-const mockInterviewers: Interviewer[] = [
-  {
-    id: '1',
-    name: 'Sarah Chen',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
-    title: 'Senior Software Engineer at Google',
-    skills: ['React', 'System Design', 'JavaScript', 'TypeScript', 'Node.js'],
-    hourlyRate: 120,
-    rating: 4.9,
-    reviewCount: 48,
-    isVerified: true,
-    yearsExperience: 8,
-  },
-  {
-    id: '2',
-    name: 'Mike Johnson',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike',
-    title: 'Staff Engineer at Meta',
-    skills: ['Java', 'System Design', 'Microservices', 'AWS'],
-    hourlyRate: 150,
-    rating: 4.8,
-    reviewCount: 35,
-    isVerified: true,
-    yearsExperience: 12,
-  },
-  {
-    id: '3',
-    name: 'Emily Rodriguez',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily',
-    title: 'Principal Engineer at Amazon',
-    skills: ['Python', 'Machine Learning', 'Data Structures', 'Algorithms'],
-    hourlyRate: 180,
-    rating: 5.0,
-    reviewCount: 62,
-    isVerified: true,
-    yearsExperience: 15,
-  },
-  {
-    id: '4',
-    name: 'David Lee',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
-    title: 'Engineering Manager at Stripe',
-    skills: ['System Design', 'Leadership', 'Ruby', 'Go'],
-    hourlyRate: 200,
-    rating: 4.7,
-    reviewCount: 28,
-    isVerified: true,
-    yearsExperience: 10,
-  },
-  {
-    id: '5',
-    name: 'Jessica Park',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica',
-    title: 'Senior Developer at Shopify',
-    skills: ['React', 'Vue.js', 'CSS', 'Frontend'],
-    hourlyRate: 95,
-    rating: 4.6,
-    reviewCount: 19,
-    isVerified: false,
-    yearsExperience: 5,
-  },
-  {
-    id: '6',
-    name: 'Alex Turner',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
-    title: 'DevOps Lead at Netflix',
-    skills: ['Kubernetes', 'Docker', 'CI/CD', 'AWS', 'Terraform'],
-    hourlyRate: 140,
-    rating: 4.8,
-    reviewCount: 41,
-    isVerified: true,
-    yearsExperience: 7,
-  },
-];
-
-const allSkills = [...new Set(mockInterviewers.flatMap(i => i.skills))].sort();
+import { Users, Calendar as CalendarIcon, Loader2 } from 'lucide-react';
 
 export default function Marketplace() {
+  const [interviewers, setInterviewers] = useState<Interviewer[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [skillFilter, setSkillFilter] = useState<string | null>(null);
   const [priceFilter, setPriceFilter] = useState<{ min: number; max: number } | null>(null);
@@ -106,19 +30,49 @@ export default function Marketplace() {
     notes: '',
   });
 
+  // Fetch Interviewers from Backend
+  useEffect(() => {
+    const fetchInterviewers = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/interviewers');
+        if (!response.ok) throw new Error('Failed to fetch');
+        const data = await response.json();
+        
+        // Ensure ID mapping handles _id from MongoDB
+        const formattedData = data.map((item: any) => ({
+            ...item,
+            id: item._id || item.id
+        }));
+        
+        setInterviewers(formattedData);
+      } catch (error) {
+        console.error("Error loading interviewers:", error);
+        toast.error("Could not load interviewers. Please ensure backend is running.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchInterviewers();
+  }, []);
+
+  const allSkills = useMemo(() => {
+    return [...new Set(interviewers.flatMap(i => i.skills || []))].sort();
+  }, [interviewers]);
+
   const filteredInterviewers = useMemo(() => {
-    return mockInterviewers.filter(interviewer => {
+    return interviewers.filter(interviewer => {
       // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
         const matchesName = interviewer.name.toLowerCase().includes(query);
         const matchesTitle = interviewer.title.toLowerCase().includes(query);
-        const matchesSkill = interviewer.skills.some(s => s.toLowerCase().includes(query));
+        const matchesSkill = interviewer.skills?.some(s => s.toLowerCase().includes(query));
         if (!matchesName && !matchesTitle && !matchesSkill) return false;
       }
 
       // Skill filter
-      if (skillFilter && !interviewer.skills.includes(skillFilter)) {
+      if (skillFilter && !interviewer.skills?.includes(skillFilter)) {
         return false;
       }
 
@@ -131,7 +85,7 @@ export default function Marketplace() {
 
       return true;
     });
-  }, [searchQuery, skillFilter, priceFilter]);
+  }, [searchQuery, skillFilter, priceFilter, interviewers]);
 
   const handleHire = (interviewer: Interviewer) => {
     setSelectedInterviewer(interviewer);
@@ -143,6 +97,7 @@ export default function Marketplace() {
       return;
     }
 
+    // Here you would add a POST request to save the booking to the backend
     toast.success(`Interview scheduled with ${selectedInterviewer?.name}!`, {
       description: `${bookingDetails.candidateName} for ${bookingDetails.role}`,
     });
@@ -176,27 +131,36 @@ export default function Marketplace() {
       {/* Results count */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Showing {filteredInterviewers.length} of {mockInterviewers.length} interviewers
+          Showing {filteredInterviewers.length} of {interviewers.length} interviewers
         </p>
       </div>
 
-      {/* Interviewer Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredInterviewers.map((interviewer, index) => (
-          <InterviewerCard
-            key={interviewer.id}
-            interviewer={interviewer}
-            onHire={handleHire}
-            className={`animate-fade-in stagger-${(index % 5) + 1}`}
-          />
-        ))}
-      </div>
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      )}
 
-      {filteredInterviewers.length === 0 && (
+      {/* Interviewer Grid */}
+      {!isLoading && (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredInterviewers.map((interviewer, index) => (
+            <InterviewerCard
+                key={interviewer.id}
+                interviewer={interviewer}
+                onHire={handleHire}
+                className={`animate-fade-in stagger-${(index % 5) + 1}`}
+            />
+            ))}
+        </div>
+      )}
+
+      {!isLoading && filteredInterviewers.length === 0 && (
         <div className="text-center py-12">
           <Users className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-foreground">No interviewers found</h3>
-          <p className="text-muted-foreground mt-1">Try adjusting your filters</p>
+          <p className="text-muted-foreground mt-1">Try adjusting your filters or checking your database connection</p>
         </div>
       )}
 

@@ -12,4 +12,4 @@ const connectDB = async (uri) => {
   }
 };
 
-module.exports = connectDB;
+export default connectDB;
