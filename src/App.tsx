@@ -16,11 +16,15 @@ import NotFound from "@/pages/NotFound";
 import CompanyDashboard from "@/pages/company/CompanyDashboard";
 import Marketplace from "@/pages/company/Marketplace";
 import SessionReport from "@/pages/company/SessionReport";
+import PostJob from "@/pages/company/PostJob";
 
 // Interviewer Pages
 import InterviewerDashboard from "@/pages/interviewer/InterviewerDashboard";
 import EditProfile from "@/pages/interviewer/EditProfile";
 import Wallet from "@/pages/interviewer/Wallet";
+import JobBoard from "@/pages/interviewer/JobBoard";
+
+import ChatPage from "@/pages/chatPage";
 
 const queryClient = new QueryClient();
 
@@ -43,11 +47,15 @@ const App = () => (
               <Route path="/company/dashboard" element={<CompanyDashboard />} />
               <Route path="/company/hire" element={<Marketplace />} />
               <Route path="/company/history" element={<SessionReport />} />
+              <Route path="/company/jobs" element={<PostJob />} />
               
               {/* Interviewer routes */}
               <Route path="/interviewer/dashboard" element={<InterviewerDashboard />} />
               <Route path="/interviewer/profile" element={<EditProfile />} />
               <Route path="/interviewer/wallet" element={<Wallet />} />
+              <Route path="/interviewer/jobs" element={<JobBoard />} />
+
+              <Route path="/chat" element={<ChatPage />} />
               
               {/* Root redirect - handled by MainLayout */}
               <Route path="/" element={<Navigate to="/login" replace />} />

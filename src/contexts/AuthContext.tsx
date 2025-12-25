@@ -14,6 +14,13 @@ interface User {
   name: string;
   role: UserRole;
   profile?: any;
+  // Flat properties
+  title?: string;
+  bio?: string;
+  skills?: string[];
+  hourlyRate?: number;
+  yearsExperience?: number;
+  avatar?: string;
 }
 
 interface RegisterPayload {
@@ -35,6 +42,7 @@ interface AuthContextType {
   ) => Promise<void>;
   logout: () => void;
   setRole: (role: UserRole) => void;
+  updateUser: (userData: Partial<User>) => void; // New function
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -54,18 +62,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
+  /* ---------------- UPDATE USER (NEW) ---------------- */
+  const updateUser = (userData: Partial<User>) => {
+    if (!user) return;
+    const updatedUser = { ...user, ...userData };
+    setUser(updatedUser);
+    localStorage.setItem('interview_platform_user', JSON.stringify(updatedUser));
+  };
+
   /* ---------------- LOGIN ---------------- */
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     
-    // DEMO BYPASS: Keep the demo login working for testing if you want
+    // DEMO BYPASS
     if (password === 'demo') {
         const demoUser: User = {
             id: 'demo-123',
             email,
             name: 'Demo User',
             role: email.includes('company') ? 'company' : 'interviewer',
-            profile: {}
         };
         setUser(demoUser);
         localStorage.setItem('interview_platform_user', JSON.stringify(demoUser));
@@ -163,6 +178,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         logout,
         setRole,
+        updateUser,
       }}
     >
       {children}

@@ -1,36 +1,25 @@
 import express from 'express';
 import User from '../model/User.js';
-import {editInterviewer, updateInterviewer} from '../controllers/interviewerController.js'
+import { editInterviewer, updateInterviewer } from '../controllers/interviewerController.js';
 
 const router = express.Router();
 
-// GET all interviewers
-// router.get('/', async (req, res) => {
-//   try {
-//     const users = await User.find({});
-//     res.json(interviewers);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Server Error', error: error.message });
-//   }
-// });
+// 1. GET all interviewers (Fix: Uncommented this section)
+router.get('/', async (req, res) => {
+  try {
+    // Fetch all users who have the role 'interviewer'
+    const interviewers = await User.find({ role: 'interviewer' }).select('-password');
+    res.json(interviewers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
 
-// POST a new interviewer (Use this to seed data initially)
-// router.post('/', async (req, res) => {
-//   try {
-//     const newInterviewer = new Interviewer(req.body);
-//     const savedInterviewer = await newInterviewer.save();
-//     res.status(201).json(savedInterviewer);
-//   } catch (error) {
-//     res.status(400).json({ message: 'Error creating interviewer', error: error.message });
-//   }
-// });
-
-//edit route
+// Edit routes
 router
   .route("/edit/:id")
   .get(editInterviewer)
-  .put(updateInterviewer)
-
-
+  .put(updateInterviewer);
 
 export default router;
