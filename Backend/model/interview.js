@@ -7,12 +7,14 @@ const InterviewSchema = new mongoose.Schema({
   role: { type: String, required: true },
   date: { type: String, required: true }, // Format: "YYYY-MM-DD"
   time: { type: String }, // Format: "HH:mm"
-  notes: { type: String },
-  
-  status: { 
-    type: String, 
-    enum: ['pending', 'confirmed', 'completed', 'cancelled'], 
-    default: 'pending' 
+  // notes field removed
+  cv: { type: String }, // Path to uploaded file
+  description: { type: String },
+
+  status: {
+    type: String,
+    enum: ['pending', 'confirmed', 'completed', 'cancelled'],
+    default: 'pending'
   },
   result: { type: String, enum: ['passed', 'failed', null], default: null },
   createdAt: { type: Date, default: Date.now }

@@ -31,12 +31,19 @@ export default function Register() {
   const [hiringNeeds, setHiringNeeds] = useState('');
 
   const [loading, setLoading] = useState(false);
+  const [avatar, setAvatar] = useState<File | null>(null);
+  const [cv, setCv] = useState<File | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name || !email || !password || !confirmPassword) {
       toast.error('Please fill all required fields');
+      return;
+    }
+
+    if (role === 'interviewer' && !cv) {
+      toast.error('Please upload your CV');
       return;
     }
 
@@ -47,14 +54,22 @@ export default function Register() {
 
     setLoading(true);
     try {
-      await register(email, password, {
-        name,
-        role,
-        profile:
-          role === 'interviewer'
-            ? { skills, experience, portfolio, hourlyRate }
-            : { companyName, location, website, hiringNeeds },
-      });
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('role', role);
+
+      const profileData = role === 'interviewer'
+        ? { skills, experience, portfolio, hourlyRate }
+        : { companyName, location, website, hiringNeeds };
+
+      formData.append('profile', JSON.stringify(profileData));
+
+      if (avatar) formData.append('avatar', avatar);
+      if (cv) formData.append('cv', cv);
+
+      await register(email, password, formData);
 
       toast.success('Account created successfully');
 
@@ -101,12 +116,21 @@ export default function Register() {
           <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <Input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
 
+          <div className="space-y-1.5">
+            <Label>Profile Photo (Optional)</Label>
+            <Input type="file" accept="image/*" onChange={(e) => setAvatar(e.target.files?.[0] || null)} />
+          </div>
+
           {role === 'interviewer' && (
             <>
               <Input placeholder="Skills" value={skills} onChange={(e) => setSkills(e.target.value)} />
               <Input placeholder="Experience (years)" value={experience} onChange={(e) => setExperience(e.target.value)} />
               <Input placeholder="Portfolio / LinkedIn" value={portfolio} onChange={(e) => setPortfolio(e.target.value)} />
               <Input placeholder="Hourly Rate" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} />
+              <div className="space-y-1.5">
+                <Label>Upload CV (Required)</Label>
+                <Input type="file" accept=".pdf,.doc,.docx" onChange={(e) => setCv(e.target.files?.[0] || null)} />
+              </div>
             </>
           )}
 

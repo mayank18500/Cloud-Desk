@@ -1,8 +1,8 @@
 import { Badge, SkillTag } from '@/components/shared/Badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Star, Clock, CheckCircle, ArrowRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Clock, CheckCircle, ArrowRight } from 'lucide-react';
+import { cn, getMediaUrl } from '@/lib/utils';
 
 export interface Interviewer {
   id: string;
@@ -11,19 +11,20 @@ export interface Interviewer {
   title: string;
   skills: string[];
   hourlyRate: number;
-  rating: number;
-  reviewCount: number;
   isVerified: boolean;
   yearsExperience: number;
+  cv?: string;
+  portfolio?: string;
 }
 
 interface InterviewerCardProps {
   interviewer: Interviewer;
   onHire: (interviewer: Interviewer) => void;
+  onViewProfile?: (interviewer: Interviewer) => void;
   className?: string;
 }
 
-export function InterviewerCard({ interviewer, onHire, className }: InterviewerCardProps) {
+export function InterviewerCard({ interviewer, onHire, onViewProfile, className }: InterviewerCardProps) {
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -36,16 +37,23 @@ export function InterviewerCard({ interviewer, onHire, className }: InterviewerC
   return (
     <div className={cn('interviewer-card group', className)}>
       <div className="flex items-start gap-4">
-        <Avatar className="h-14 w-14 ring-2 ring-primary/20 transition-all duration-300 group-hover:ring-primary/40">
-          <AvatarImage src={interviewer.avatar} alt={interviewer.name} />
+        <Avatar
+          className="h-14 w-14 ring-2 ring-primary/20 transition-all duration-300 group-hover:ring-primary/40 cursor-pointer"
+          onClick={() => onViewProfile?.(interviewer)}
+        >
+          <AvatarImage src={getMediaUrl(interviewer.avatar)} alt={interviewer.name} />
           <AvatarFallback className="bg-gradient-signature text-white text-lg font-bold">
             {getInitials(interviewer.name)}
           </AvatarFallback>
         </Avatar>
-        
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="font-bold text-foreground truncate">{interviewer.name}</h3>
+            <h3
+              className="font-bold text-foreground truncate cursor-pointer hover:text-primary transition-colors"
+              onClick={() => onViewProfile?.(interviewer)}
+            >
+              {interviewer.name}
+            </h3>
             {interviewer.isVerified && (
               <Badge variant="verified" className="shrink-0">
                 <CheckCircle className="w-3 h-3" />
@@ -54,15 +62,17 @@ export function InterviewerCard({ interviewer, onHire, className }: InterviewerC
             )}
           </div>
           <p className="text-sm text-muted-foreground mt-0.5">{interviewer.title}</p>
+          <button
+            onClick={() => onViewProfile?.(interviewer)}
+            className="text-xs text-primary hover:underline mt-1 font-medium"
+          >
+            View Profile
+          </button>
         </div>
       </div>
 
       <div className="mt-4 flex items-center gap-4 text-sm">
-        <div className="flex items-center gap-1.5 bg-warning/10 px-2.5 py-1 rounded-lg">
-          <Star className="h-4 w-4 fill-warning text-warning" />
-          <span className="font-bold text-foreground">{interviewer.rating.toFixed(1)}</span>
-          <span className="text-muted-foreground">({interviewer.reviewCount})</span>
-        </div>
+
         <div className="flex items-center gap-1.5 text-muted-foreground">
           <Clock className="h-4 w-4" />
           <span>{interviewer.yearsExperience} yrs exp</span>
@@ -84,10 +94,10 @@ export function InterviewerCard({ interviewer, onHire, className }: InterviewerC
 
       <div className="mt-6 flex items-center justify-between pt-4 border-t border-base-200">
         <div>
-          <span className="text-2xl font-black font-mono text-gradient-primary">${interviewer.hourlyRate}</span>
+          <span className="text-2xl font-black font-mono text-gradient-primary">₹{interviewer.hourlyRate}</span>
           <span className="text-muted-foreground text-sm">/hr</span>
         </div>
-        <Button 
+        <Button
           onClick={() => onHire(interviewer)}
           className="btn-gradient rounded-xl gap-2 group/btn"
         >

@@ -21,6 +21,7 @@ interface User {
   hourlyRate?: number;
   yearsExperience?: number;
   avatar?: string;
+  portfolio?: string;
 }
 
 interface RegisterPayload {
@@ -38,7 +39,7 @@ interface AuthContextType {
   register: (
     email: string,
     password: string,
-    data: RegisterPayload
+    data: FormData | RegisterPayload
   ) => Promise<void>;
   logout: () => void;
   setRole: (role: UserRole) => void;
@@ -73,19 +74,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   /* ---------------- LOGIN ---------------- */
   const login = async (email: string, password: string) => {
     setIsLoading(true);
-    
+
     // DEMO BYPASS
     if (password === 'demo') {
-        const demoUser: User = {
-            id: 'demo-123',
-            email,
-            name: 'Demo User',
-            role: email.includes('company') ? 'company' : 'interviewer',
-        };
-        setUser(demoUser);
-        localStorage.setItem('interview_platform_user', JSON.stringify(demoUser));
-        setIsLoading(false);
-        return;
+      const demoUser: User = {
+        id: 'demo-123',
+        email,
+        name: 'Demo User',
+        role: email.includes('company') ? 'company' : 'interviewer',
+      };
+      setUser(demoUser);
+      localStorage.setItem('interview_platform_user', JSON.stringify(demoUser));
+      setIsLoading(false);
+      return;
     }
 
     try {
@@ -116,19 +117,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (
     email: string,
     password: string,
-    data: RegisterPayload
+    data: FormData | RegisterPayload
   ) => {
     setIsLoading(true);
     try {
+      const isFormData = data instanceof FormData;
+
       const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' },
+        body: isFormData ? data : JSON.stringify({
           email,
           password,
-          name: data.name,
-          role: data.role,
-          profile: data.profile
+          ...data
         }),
       });
 

@@ -2,10 +2,10 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/shared/Badge';
-import { 
-  Menu, 
-  LogOut, 
-  Settings, 
+import {
+  Menu,
+  LogOut,
+  Settings,
   Bell,
   Building2,
   User,
@@ -20,6 +20,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getMediaUrl } from '@/lib/utils';
+import { DeleteAccountModal } from './DeleteAccountModal';
+import { useState } from 'react';
+import { Trash2 } from 'lucide-react';
 
 interface NavbarProps {
   onMenuClick?: () => void;
@@ -28,6 +32,7 @@ interface NavbarProps {
 export function Navbar({ onMenuClick }: NavbarProps) {
   const { user, logout, role } = useAuth();
   const location = useLocation();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const getInitials = (name: string) => {
     return name
@@ -51,7 +56,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          
+
           <Link to="/" className="flex items-center gap-3 hover-scale">
             {/* Gradient Logo */}
             <div className="size-10 rounded-xl bg-gradient-signature flex items-center justify-center text-white shadow-lg shadow-primary/30">
@@ -81,9 +86,9 @@ export function Navbar({ onMenuClick }: NavbarProps) {
             </Badge>
           )}
 
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             className="relative hover:bg-primary/10 rounded-xl"
           >
             <Bell className="h-5 w-5" />
@@ -94,7 +99,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-10 w-10 rounded-xl p-0 hover:bg-primary/10">
                 <Avatar className="h-10 w-10 ring-2 ring-primary/20">
-                  <AvatarImage src={user?.avatar} alt={user?.name} />
+                  <AvatarImage src={getMediaUrl(user?.avatar)} alt={user?.name} />
                   <AvatarFallback className="bg-gradient-signature text-white font-bold">
                     {user?.name ? getInitials(user.name) : 'U'}
                   </AvatarFallback>
@@ -122,10 +127,24 @@ export function Navbar({ onMenuClick }: NavbarProps) {
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
               </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => setIsDeleteModalOpen(true)}
+                className="text-destructive focus:text-destructive cursor-pointer font-medium"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete Account
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
+
+      <DeleteAccountModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+      />
     </nav>
   );
 }

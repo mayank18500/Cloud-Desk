@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import {Badge} from '@/components/shared/Badge';
+import { Badge } from '@/components/shared/Badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { Button } from '@/components/ui/button';
-import { Wallet as WalletIcon, DollarSign, TrendingUp, ArrowUpRight, Loader2 } from 'lucide-react';
+import { Wallet as WalletIcon, IndianRupee, TrendingUp, ArrowUpRight, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Wallet() {
@@ -32,10 +32,10 @@ export default function Wallet() {
 
   // Calculate Earnings
   const hourlyRate = user?.hourlyRate || (user as any)?.profile?.hourlyRate || 0;
-  
+
   const completedInterviews = interviews.filter(i => i.status === 'completed');
   const pendingInterviews = interviews.filter(i => i.status === 'confirmed'); // Confirmed but not done
-  
+
   // Simple calculation: Each completed interview earns the hourly rate
   const totalEarned = completedInterviews.length * hourlyRate;
   const pendingAmount = pendingInterviews.length * hourlyRate;
@@ -62,18 +62,18 @@ export default function Wallet() {
             <div>
               <p className="text-sm font-medium text-muted-foreground">Current Balance</p>
               <p className="text-4xl font-bold font-display text-foreground mt-2">
-                ${currentBalance.toLocaleString()}
+                ₹{currentBalance.toLocaleString()}
               </p>
             </div>
             <div className="stat-card-icon bg-primary/10 text-primary">
-              <DollarSign className="h-6 w-6" />
+              <IndianRupee className="h-6 w-6" />
             </div>
           </div>
         </div>
 
         <StatCard
           title="Pending"
-          value={`$${pendingAmount}`}
+          value={`₹${pendingAmount}`}
           subtitle="Upcoming Interviews"
           icon={TrendingUp}
           variant="accent"
@@ -81,7 +81,7 @@ export default function Wallet() {
 
         <StatCard
           title="Total Earned"
-          value={`$${totalEarned.toLocaleString()}`}
+          value={`₹${totalEarned.toLocaleString()}`}
           subtitle="All time"
           icon={ArrowUpRight}
           variant="success"
@@ -94,20 +94,20 @@ export default function Wallet() {
         <div className="bg-card rounded-xl border border-border/50 overflow-hidden">
           <div className="divide-y divide-border/50">
             {completedInterviews.length === 0 ? (
-               <p className="p-4 text-muted-foreground">No completed interviews yet.</p>
+              <p className="p-4 text-muted-foreground">No completed interviews yet.</p>
             ) : (
-                completedInterviews.map((interview) => (
+              completedInterviews.map((interview) => (
                 <div key={interview._id} className="flex items-center justify-between p-4">
-                    <div>
+                  <div>
                     <p className="font-medium text-foreground">{interview.companyId?.name || "Company"}</p>
                     <p className="text-sm text-muted-foreground">{interview.role} • {interview.date}</p>
-                    </div>
-                    <div className="text-right">
-                    <p className="text-lg font-bold text-success">+${hourlyRate}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-success">+₹{hourlyRate}</p>
                     <Badge variant="success" icon={false}>Paid</Badge>
-                    </div>
+                  </div>
                 </div>
-                ))
+              ))
             )}
           </div>
         </div>

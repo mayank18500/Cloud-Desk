@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/shared/Badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import { Users, Video, DollarSign, TrendingUp, Plus, ArrowRight, Calendar, Clock } from 'lucide-react';
+import { Users, Video, IndianRupee, TrendingUp, Plus, ArrowRight, Calendar, Clock } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
+import { getMediaUrl } from '@/lib/utils';
 
 export default function CompanyDashboard() {
   const { user } = useAuth();
@@ -39,7 +40,7 @@ export default function CompanyDashboard() {
   const upcoming = interviews.filter(i => i.status === 'confirmed' || i.status === 'scheduled');
   const completed = interviews.filter(i => i.status === 'completed');
   const totalHires = interviews.filter(i => i.result === 'passed').length;
-  
+
   // Calculate total spent (assuming a fixed rate or fetching from interview data)
   const totalSpent = completed.length * 50; // Example: $50 per interview
 
@@ -83,9 +84,9 @@ export default function CompanyDashboard() {
         />
         <StatCard
           title="Total Spent"
-          value={`$${totalSpent}`}
+          value={`₹${totalSpent}`}
           subtitle="Estimated cost"
-          icon={DollarSign}
+          icon={IndianRupee}
           variant="success"
         />
         <StatCard
@@ -109,6 +110,7 @@ export default function CompanyDashboard() {
               {interviews.slice(0, 5).map((interview) => (
                 <div key={interview._id} className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors">
                   <Avatar className="h-10 w-10">
+                    <AvatarImage src={getMediaUrl(interview.interviewerId?.avatar)} />
                     <AvatarFallback>{interview.interviewerId?.name?.[0] || 'I'}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">

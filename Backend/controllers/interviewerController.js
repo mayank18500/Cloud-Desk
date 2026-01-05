@@ -7,16 +7,23 @@ export const editInterviewer = async (req, res) => {
 
 export const updateInterviewer = async (req, res) => {
   try {
+    const updateData = {
+      name: req.body.name,
+      title: req.body.title,
+      bio: req.body.bio,
+      skills: req.body.skills,
+      yearsExperience: req.body.yearsExperience,
+      hourlyRate: req.body.hourlyRate,
+    };
+
+    if (req.files) {
+      if (req.files.cv) updateData.cv = req.files.cv[0].path;
+      if (req.files.avatar) updateData.avatar = req.files.avatar[0].path;
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
-      {
-        name: req.body.name,
-        title: req.body.title,
-        bio: req.body.bio,
-        skills: req.body.skills,
-        yearsExperience: req.body.yearsExperience,
-        hourlyRate: req.body.hourlyRate,
-      },
+      { $set: updateData },
       { new: true }
     );
 

@@ -12,7 +12,7 @@ export default function LoginPage() {
   const { login, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +22,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast.error('Please fill in all fields');
       return;
@@ -44,7 +44,7 @@ export default function LoginPage() {
     const demoEmail = type === 'company' ? 'company@demo.com' : 'interviewer@demo.com';
     setEmail(demoEmail);
     setPassword('demo');
-    
+
     setIsLoading(true);
     try {
       await login(demoEmail, 'demo');
@@ -65,11 +65,11 @@ export default function LoginPage() {
           </div>
         </div>
         <div>
-          <h1 className="text-4xl font-display font-bold text-white mb-4">
+          <h1 className="text-5xl font-display font-black text-white mb-6">
             Intelligent Interviewer
           </h1>
-          <p className="text-white/80 text-lg max-w-md">
-            The premier platform connecting companies with expert technical interviewers. 
+          <p className="text-white/80 text-xl max-w-lg leading-relaxed">
+            The premier platform connecting companies with expert technical interviewers.
             Streamline your hiring process with AI-powered insights.
           </p>
           <div className="mt-8 flex gap-4">
@@ -93,8 +93,8 @@ export default function LoginPage() {
       </div>
 
       {/* Right side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-16">
+        <div className="w-full max-w-xl">
           {/* Mobile logo */}
           <div className="lg:hidden text-center mb-8">
             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mx-auto mb-3">
@@ -173,9 +173,9 @@ export default function LoginPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-3 justify-center">
-                <button onClick={() => navigate('/register')} className="text-primary underline mt-1 text-center md:col-span-2 md:justify-self-center">
-                  Register
-                </button>
+              <button onClick={() => navigate('/register')} className="text-primary underline mt-1 text-center md:col-span-2 md:justify-self-center">
+                Register
+              </button>
             </div>
           </div>
         </div>
