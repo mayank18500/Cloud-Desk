@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,18 +24,34 @@ export default function ChatPage() {
     const [scheduleTime, setScheduleTime] = useState('');
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    const [searchParams] = useSearchParams();
+    const targetUserId = searchParams.get('userId');
+
     // 1. Fetch User's Chats
     useEffect(() => {
         if (!user?.id) return;
         const fetchChats = async () => {
             const res = await fetch(`http://localhost:5000/api/chats/user/${user.id}`);
-            if (res.ok) setChats(await res.json());
+            if (res.ok) {
+                const data = await res.json();
+                setChats(data);
+
+                // Auto-select chat if query param exists
+                if (targetUserId) {
+                    const targetChat = data.find((c: any) =>
+                        c.participants.some((p: any) => p._id === targetUserId)
+                    );
+                    if (targetChat) {
+                        setActiveChat(targetChat);
+                    }
+                }
+            }
         };
         fetchChats();
         // Poll for new chats/messages every 5 seconds
         const interval = setInterval(fetchChats, 5000);
         return () => clearInterval(interval);
-    }, [user]);
+    }, [user, targetUserId]);
 
     // 2. Load Messages when Chat Selected
     useEffect(() => {

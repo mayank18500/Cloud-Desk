@@ -104,6 +104,7 @@ export default function InterviewerDashboard() {
                 key={interview._id}
                 id={interview._id}
                 type="upcoming"
+                companyId={interview.companyId?._id}
                 companyName={interview.companyId?.name || "Unknown Company"}
                 companyWebsite={interview.companyId?.website}
                 companyAvatar={interview.companyId?.avatar}

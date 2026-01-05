@@ -7,7 +7,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { Badge } from '@/components/shared/Badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Briefcase, IndianRupee, Plus, Check } from 'lucide-react';
+import { Briefcase, IndianRupee, Plus, Check, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function PostJob() {
   const { user } = useAuth();
@@ -109,7 +110,14 @@ export default function PostJob() {
                       </div>
                     </div>
                     {app.status === 'selected' ? (
-                      <Badge variant="success"><Check className="h-3 w-3 mr-1" /> Hired</Badge>
+                      <div className="flex gap-2">
+                        <Badge variant="success"><Check className="h-3 w-3 mr-1" /> Hired</Badge>
+                        <Button size="sm" variant="secondary" asChild>
+                          <Link to={`/chat?userId=${app.interviewerId._id}`}>
+                            <MessageSquare className="h-3 w-3 mr-1" /> Message
+                          </Link>
+                        </Button>
+                      </div>
                     ) : (
                       <Button size="sm" variant="outline" onClick={() => handleSelect(job._id, app.interviewerId._id)}>Select</Button>
                     )}

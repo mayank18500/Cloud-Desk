@@ -32,15 +32,12 @@ const companyNav: NavItem[] = [
   { label: 'Hire Interviewers', icon: Users, href: '/company/hire' },
   { label: 'My Job Postings', icon: Briefcase, href: '/company/jobs' }, // New Item
   { label: 'Interview History', icon: History, href: '/company/history' },
-  { label: 'Messages', icon: MessageSquare, href: '/chat' },
 ];
 
 const interviewerNav: NavItem[] = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/interviewer/dashboard' },
   { label: 'Job Board', icon: Briefcase, href: '/interviewer/jobs' }, // New Item
   { label: 'Profile Settings', icon: UserCog, href: '/interviewer/profile' },
-  { label: 'Wallet', icon: Wallet, href: '/interviewer/wallet' },
-  { label: 'Messages', icon: MessageSquare, href: '/chat' },
 ];
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {

@@ -21,7 +21,6 @@ import PostJob from "@/pages/company/PostJob";
 // Interviewer Pages
 import InterviewerDashboard from "@/pages/interviewer/InterviewerDashboard";
 import EditProfile from "@/pages/interviewer/EditProfile";
-import Wallet from "@/pages/interviewer/Wallet";
 import JobBoard from "@/pages/interviewer/JobBoard";
 
 import ChatPage from "@/pages/chatPage";
@@ -52,7 +51,6 @@ const App = () => (
               {/* Interviewer routes */}
               <Route path="/interviewer/dashboard" element={<InterviewerDashboard />} />
               <Route path="/interviewer/profile" element={<EditProfile />} />
-              <Route path="/interviewer/wallet" element={<Wallet />} />
               <Route path="/interviewer/jobs" element={<JobBoard />} />
 
               <Route path="/chat" element={<ChatPage />} />

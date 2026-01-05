@@ -1,12 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/shared/Badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar, Clock, Check, X, ExternalLink, FileText } from 'lucide-react';
+import { Calendar, Clock, Check, X, ExternalLink, FileText, MessageSquare } from 'lucide-react';
 import { cn, getMediaUrl } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 interface RequestRowProps {
   id: string;
   type: 'incoming' | 'upcoming' | 'pending';
+  companyId?: string;
   companyName?: string;
   companyWebsite?: string;
   companyAvatar?: string;
@@ -28,6 +30,7 @@ interface RequestRowProps {
 
 export function RequestRow({
   type,
+  companyId,
   companyName,
   companyWebsite,
   companyAvatar,
@@ -168,14 +171,24 @@ export function RequestRow({
           )}
 
           {type === 'upcoming' && (
-            <Button
-              size="sm"
-              onClick={onStart}
-              className="btn-gradient rounded-xl gap-1.5"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Start Interview
-            </Button>
+            <>
+              <Button
+                size="sm"
+                onClick={onStart}
+                className="btn-gradient rounded-xl gap-1.5"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Start Interview
+              </Button>
+              {companyId && (
+                <Button size="sm" variant="secondary" className="rounded-xl gap-1.5" asChild>
+                  <Link to={`/chat?userId=${companyId}`}>
+                    <MessageSquare className="h-4 w-4" />
+                    Message
+                  </Link>
+                </Button>
+              )}
+            </>
           )}
 
           {type === 'pending' && (
