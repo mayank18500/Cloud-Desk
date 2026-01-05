@@ -29,29 +29,48 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // 1. FIX: Flatten the profile object to match User Model
-    // Extract specific fields from the profile object sent by frontend
-    const { skills, hourlyRate, experience, ...otherProfileData } = profile || {};
+    // Flatten the profile object to match User Model
+    // When using FormData, profile might come as a stringified JSON or separate fields
+    let profileData = {};
+    if (typeof profile === 'string') {
+      try {
+        profileData = JSON.parse(profile);
+      } catch (e) {
+        console.error('Failed to parse profile JSON', e);
+      }
+    } else {
+      profileData = profile || {};
+    }
 
-    // 2. FIX: Convert skills string to Array if needed
+    const { skills, hourlyRate, experience, cv, avatar, ...otherProfileData } = profileData;
+
+    // Convert skills string to Array if needed
     let skillsArray = [];
     if (typeof skills === 'string') {
-        skillsArray = skills.split(',').map(s => s.trim()).filter(s => s);
+      skillsArray = skills.split(',').map(s => s.trim()).filter(s => s);
     } else if (Array.isArray(skills)) {
-        skillsArray = skills;
+      skillsArray = skills;
     }
+
+    // Handle files
+    const cvPath = req.files?.cv?.[0]?.path;
+    const avatarPath = req.files?.avatar?.[0]?.path;
 
     // Create user with FLAT structure
     const user = new User({
-      name,
+      name: role === 'company' ? (profileData.companyName || name) : name,
       email,
       password: hashedPassword,
       role,
-      // Map frontend 'profile' fields to User Model root fields
       skills: skillsArray,
       hourlyRate: Number(hourlyRate) || 0,
       yearsExperience: Number(experience) || 0,
-      ...otherProfileData // spreads title, bio, etc.
+      website: otherProfileData.website,
+      companyName: otherProfileData.companyName,
+      location: otherProfileData.location,
+      cv: cvPath,
+      avatar: avatarPath,
+      ...otherProfileData
     });
 
     await user.save();
@@ -73,7 +92,9 @@ export const register = async (req, res) => {
         role: user.role,
         skills: user.skills,
         hourlyRate: user.hourlyRate,
-        title: user.title
+        cv: user.cv,
+        avatar: user.avatar,
+        portfolio: user.portfolio
       },
     });
   } catch (error) {
@@ -91,13 +112,19 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: 'Missing fields' });
     }
 
-    const user = await User.findOne({ email });
+    console.log('Login Attempt for:', email);
+
+    // Case-insensitive search
+    const user = await User.findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } });
+
     if (!user) {
+      console.log('Login Failed: User not found for email:', email);
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log('Login Failed: Password mismatch for user:', user.email);
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
@@ -121,6 +148,34 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.error('Login Error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+/* ---------------- DELETE ACCOUNT ---------------- */
+export const deleteAccount = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({ message: 'Password is required for confirmation' });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Incorrect password' });
+    }
+
+    await User.findByIdAndDelete(id);
+    res.json({ message: 'Account deleted successfully' });
+  } catch (error) {
+    console.error('Delete Account Error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

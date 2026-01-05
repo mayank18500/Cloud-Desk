@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { History, Calendar, Clock, CheckCircle, XCircle, FileText, Star, Loader2 } from 'lucide-react';
+import { History, Calendar, Clock, CheckCircle, XCircle, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function SessionReport() {
@@ -27,7 +27,7 @@ export default function SessionReport() {
         if (response.ok) {
           const data = await response.json();
           // Sort by date (newest first)
-          setInterviews(data.reverse()); 
+          setInterviews(data.reverse());
         }
       } catch (error) {
         console.error("Error fetching history:", error);
@@ -122,20 +122,20 @@ export default function SessionReport() {
 
           {selectedInterview && (
             <div className="space-y-6 py-4">
-               {/* Notes Section (Since we don't have AI summary yet) */}
-               <div>
-                  <h4 className="font-semibold text-foreground mb-2">Interviewer Notes</h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {selectedInterview.notes || "No notes provided for this session."}
-                  </p>
-               </div>
-               
-               <div className="p-3 bg-card border border-border/50 rounded-lg">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                    <Calendar className="h-4 w-4" /> Date & Time
-                  </div>
-                  <p className="font-medium">{selectedInterview.date} at {selectedInterview.time}</p>
-               </div>
+              {/* Notes Section (Since we don't have AI summary yet) */}
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">Interviewer Notes</h4>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {selectedInterview.notes || "No notes provided for this session."}
+                </p>
+              </div>
+
+              <div className="p-3 bg-card border border-border/50 rounded-lg">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                  <Calendar className="h-4 w-4" /> Date & Time
+                </div>
+                <p className="font-medium">{selectedInterview.date} at {selectedInterview.time}</p>
+              </div>
             </div>
           )}
         </DialogContent>

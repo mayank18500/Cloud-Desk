@@ -4,7 +4,7 @@ import { RequestRow } from '@/components/dashboard/RequestRow';
 import { Badge } from '@/components/shared/Badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { Inbox, Calendar, FileText, DollarSign, Star, Video } from 'lucide-react';
+import { Inbox, Calendar, FileText, Star, Video } from 'lucide-react';
 
 export default function InterviewerDashboard() {
   const { user } = useAuth();
@@ -18,6 +18,7 @@ export default function InterviewerDashboard() {
       const response = await fetch(`http://localhost:5000/api/interviews/user/${user.id}?type=interviewer`);
       if (response.ok) {
         const data = await response.json();
+        console.log("InterviewerDashboard: Received data:", data);
         setInterviews(data);
       }
     } catch (error) {
@@ -75,11 +76,14 @@ export default function InterviewerDashboard() {
                 id={request._id}
                 type="incoming"
                 companyName={request.companyId?.name || "Unknown Company"}
+                companyWebsite={request.companyId?.website}
                 companyAvatar={request.companyId?.avatar}
                 role={request.role}
                 candidateName={request.candidateName}
                 date={request.date}
                 time={request.time}
+                cv={request.cv}
+                description={request.description}
                 onAccept={() => handleStatusUpdate(request._id, 'confirmed')}
                 onDecline={() => handleStatusUpdate(request._id, 'cancelled')}
               />
@@ -100,19 +104,22 @@ export default function InterviewerDashboard() {
                 key={interview._id}
                 id={interview._id}
                 type="upcoming"
-                companyName={interview.companyId?.name}
+                companyName={interview.companyId?.name || "Unknown Company"}
+                companyWebsite={interview.companyId?.website}
                 companyAvatar={interview.companyId?.avatar}
                 role={interview.role}
                 candidateName={interview.candidateName}
                 date={interview.date}
                 time={interview.time}
+                cv={interview.cv}
+                description={interview.description}
                 status={interview.status}
                 onStart={() => toast.success("Starting video call...")}
               />
             ))}
           </div>
         ) : (
-           <p className="text-muted-foreground p-4">No upcoming interviews.</p>
+          <p className="text-muted-foreground p-4">No upcoming interviews.</p>
         )}
       </div>
     </div>

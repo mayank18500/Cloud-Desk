@@ -77,7 +77,7 @@ export function FilterBar({
             className="pl-10"
           />
         </div>
-        
+
         <Button
           variant="outline"
           onClick={() => setShowFilters(!showFilters)}
@@ -127,10 +127,10 @@ export function FilterBar({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Any Price</SelectItem>
-                <SelectItem value="0-50">Under $50/hr</SelectItem>
-                <SelectItem value="50-100">$50 - $100/hr</SelectItem>
-                <SelectItem value="100-150">$100 - $150/hr</SelectItem>
-                <SelectItem value="150-999">$150+/hr</SelectItem>
+                <SelectItem value="0-50">Under ₹50/hr</SelectItem>
+                <SelectItem value="50-100">₹50 - ₹100/hr</SelectItem>
+                <SelectItem value="100-150">₹100 - ₹150/hr</SelectItem>
+                <SelectItem value="150-999">₹150+/hr</SelectItem>
               </SelectContent>
             </Select>
           </div>

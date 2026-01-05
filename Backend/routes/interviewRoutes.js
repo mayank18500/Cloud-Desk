@@ -1,13 +1,17 @@
 import express from 'express';
 import Interview from '../model/interview.js';
 import User from '../model/User.js';
+import { uploadCV } from '../middleware/multer.js';
 
 const router = express.Router();
 
 // Create new interview request (Booking)
-router.post('/', async (req, res) => {
+router.post('/', uploadCV.single('cv'), async (req, res) => {
   try {
-    const { companyId, interviewerId, candidateName, role, date, time, notes } = req.body;
+    const { companyId, interviewerId, candidateName, role, date, time, description } = req.body;
+    const cvUrl = req.file ? req.file.path : null;
+
+
     const newInterview = new Interview({
       companyId,
       interviewerId,
@@ -15,7 +19,8 @@ router.post('/', async (req, res) => {
       role,
       date,
       time,
-      notes
+      description,
+      cv: cvUrl
     });
     await newInterview.save();
     res.status(201).json(newInterview);
@@ -28,15 +33,15 @@ router.post('/', async (req, res) => {
 router.get('/user/:userId', async (req, res) => {
   try {
     const { type } = req.query; // 'company' or 'interviewer'
-    const query = type === 'company' 
-      ? { companyId: req.params.userId } 
+    const query = type === 'company'
+      ? { companyId: req.params.userId }
       : { interviewerId: req.params.userId };
 
     const interviews = await Interview.find(query)
-      .populate('companyId', 'name avatar')
+      .populate('companyId', 'name avatar website')
       .populate('interviewerId', 'name avatar')
       .sort({ date: 1 });
-      
+
     res.json(interviews);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching interviews' });

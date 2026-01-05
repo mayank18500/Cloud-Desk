@@ -7,7 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { MainLayout } from "@/layouts/MainLayout";
 
 // Pages
-import Register from "@/pages/Regiser";
+import Register from "@/pages/Register";
 import LoginPage from "@/pages/LoginPage";
 import OnboardingPage from "@/pages/OnboardingPage";
 import NotFound from "@/pages/NotFound";
@@ -36,11 +36,11 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-          <Route path="/register" element={<Register />} />
+            <Route path="/register" element={<Register />} />
             {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
-            
+
             {/* Protected routes with MainLayout */}
             <Route element={<MainLayout />}>
               {/* Company routes */}
@@ -48,7 +48,7 @@ const App = () => (
               <Route path="/company/hire" element={<Marketplace />} />
               <Route path="/company/history" element={<SessionReport />} />
               <Route path="/company/jobs" element={<PostJob />} />
-              
+
               {/* Interviewer routes */}
               <Route path="/interviewer/dashboard" element={<InterviewerDashboard />} />
               <Route path="/interviewer/profile" element={<EditProfile />} />
@@ -56,11 +56,11 @@ const App = () => (
               <Route path="/interviewer/jobs" element={<JobBoard />} />
 
               <Route path="/chat" element={<ChatPage />} />
-              
+
               {/* Root redirect - handled by MainLayout */}
               <Route path="/" element={<Navigate to="/login" replace />} />
             </Route>
-            
+
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>
