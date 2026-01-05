@@ -1,5 +1,6 @@
 import express from 'express';
 import Interview from '../model/interview.js';
+import Chat from '../model/chat.js';
 import User from '../model/User.js';
 import { uploadCV } from '../middleware/multer.js';
 
@@ -23,8 +24,25 @@ router.post('/', uploadCV.single('cv'), async (req, res) => {
       cv: cvUrl
     });
     await newInterview.save();
+
+    // Automatically create a Chat room
+    const initialMessage = `Hi, I have sent a request for the ${role} position for candidate ${candidateName}.`;
+    const newChat = new Chat({
+      participants: [companyId, interviewerId],
+      interviewId: newInterview._id,
+      messages: [{
+        sender: companyId,
+        text: initialMessage,
+        createdAt: new Date()
+      }],
+      lastMessage: initialMessage,
+      lastMessageAt: new Date()
+    });
+    await newChat.save();
+
     res.status(201).json(newInterview);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Error creating interview', error: error.message });
   }
 });

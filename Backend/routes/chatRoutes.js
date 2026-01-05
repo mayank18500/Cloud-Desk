@@ -50,7 +50,42 @@ router.post('/:id/message', async (req, res) => {
   }
 });
 
-// 4. Update Interview Schedule (Called from Chat UI)
+// 4. Start or Get Chat with a specific User (Fix for missing chats)
+router.post('/start', async (req, res) => {
+  try {
+    const { senderId, receiverId } = req.body;
+
+    // Check if chat already exists
+    let chat = await Chat.findOne({
+      participants: { $all: [senderId, receiverId] }
+    }).populate('participants', 'name avatar role');
+
+    if (chat) {
+      return res.json(chat);
+    }
+
+    // If not, create it
+    const newChat = new Chat({
+      participants: [senderId, receiverId],
+      messages: [],
+      lastMessage: "Chat started",
+      lastMessageAt: new Date()
+    });
+
+    await newChat.save();
+    
+    // Populate before returning
+    const populatedChat = await Chat.findById(newChat._id)
+      .populate('participants', 'name avatar role');
+
+    res.status(201).json(populatedChat);
+  } catch (error) {
+    console.error("Error starting chat:", error);
+    res.status(500).json({ message: 'Error starting chat' });
+  }
+});
+
+// 5. Update Interview Schedule (Called from Chat UI)
 router.put('/schedule/:interviewId', async (req, res) => {
   try {
     const { date, time } = req.body;

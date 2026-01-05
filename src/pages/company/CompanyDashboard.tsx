@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/shared/Badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import { Users, Video, IndianRupee, TrendingUp, Plus, ArrowRight, Calendar, Clock } from 'lucide-react';
+import { Users, Video, IndianRupee, TrendingUp, Plus, ArrowRight, Calendar, Clock, MessageSquare } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { getMediaUrl } from '@/lib/utils';
@@ -119,9 +119,16 @@ export default function CompanyDashboard() {
                       {interview.role} • with {interview.interviewerId?.name || 'Interviewer'}
                     </p>
                   </div>
-                  <Badge variant={interview.status === 'completed' ? 'success' : 'info'} icon={false}>
-                    {interview.status}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" asChild>
+                      <Link to={`/chat?userId=${interview.interviewerId?._id}`}>
+                        <MessageSquare className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Badge variant={interview.status === 'completed' ? 'success' : 'info'} icon={false}>
+                      {interview.status}
+                    </Badge>
+                  </div>
                 </div>
               ))}
               {interviews.length === 0 && <div className="p-4 text-center text-muted-foreground">No interviews found.</div>}
@@ -134,8 +141,15 @@ export default function CompanyDashboard() {
           <h2 className="dashboard-section-title"><Calendar className="h-5 w-5 text-accent" /> Upcoming</h2>
           <div className="space-y-3">
             {upcoming.map((interview) => (
-              <div key={interview._id} className="p-4 bg-card rounded-lg border border-border/50">
-                <div className="flex items-start justify-between">
+              <div key={interview._id} className="p-4 bg-card rounded-lg border border-border/50 relative group">
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button variant="secondary" size="icon" className="h-8 w-8" asChild>
+                    <Link to={`/chat?userId=${interview.interviewerId?._id}`}>
+                      <MessageSquare className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+                <div className="flex items-start justify-between pr-10">
                   <div>
                     <p className="font-medium text-foreground">{interview.candidateName}</p>
                     <p className="text-sm text-muted-foreground">{interview.role}</p>

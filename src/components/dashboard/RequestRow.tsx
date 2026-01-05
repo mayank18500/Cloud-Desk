@@ -151,6 +151,14 @@ export function RequestRow({
         <div className="flex items-center gap-2">
           {type === 'incoming' && (
             <>
+              {companyId && (
+                <Button size="sm" variant="secondary" className="rounded-xl gap-1.5" asChild>
+                  <Link to={`/chat?userId=${companyId}`}>
+                    <MessageSquare className="h-4 w-4" />
+                    Chat
+                  </Link>
+                </Button>
+              )}
               <Button
                 size="sm"
                 variant="outline"
@@ -204,6 +212,6 @@ export function RequestRow({
           )}
         </div>
       </div>
-    </div >
+    </div>
   );
 }

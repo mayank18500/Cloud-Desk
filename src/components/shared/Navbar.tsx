@@ -9,7 +9,8 @@ import {
   Bell,
   Building2,
   User,
-  Zap
+  Zap,
+  MessageSquare // Import Message Icon
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -86,6 +87,18 @@ export function Navbar({ onMenuClick }: NavbarProps) {
             </Badge>
           )}
 
+          {/* New Message Icon */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative hover:bg-primary/10 rounded-xl"
+            asChild
+          >
+            <Link to="/chat">
+              <MessageSquare className="h-5 w-5" />
+            </Link>
+          </Button>
+
           <Button
             variant="ghost"
             size="icon"
@@ -122,6 +135,12 @@ export function Navbar({ onMenuClick }: NavbarProps) {
                   </Link>
                 </DropdownMenuItem>
               )}
+              <DropdownMenuItem asChild>
+                  <Link to="/chat" className="cursor-pointer">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Messages
+                  </Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive cursor-pointer">
                 <LogOut className="mr-2 h-4 w-4" />

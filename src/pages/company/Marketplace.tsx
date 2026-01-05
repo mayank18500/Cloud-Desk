@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { FilterBar } from '@/components/marketplace/FilterBar';
-// Import the interface from the component we just fixed
 import { InterviewerCard, Interviewer } from '@/components/marketplace/InterviewerCard';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from 'sonner';
-import { Users, Calendar as CalendarIcon, Loader2, Clock, IndianRupee, FileText, ExternalLink } from 'lucide-react';
+import { Users, Calendar as CalendarIcon, Loader2, Clock, IndianRupee, FileText, ExternalLink, MessageSquare } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
@@ -30,6 +30,7 @@ import { getMediaUrl } from '@/lib/utils';
 
 export default function Marketplace() {
   const { user } = useAuth();
+  const navigate = useNavigate(); // Hook for navigation
   const [interviewers, setInterviewers] = useState<Interviewer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,19 +54,14 @@ export default function Marketplace() {
   // Generate time slots (12-hour format, 30 min intervals)
   const timeHourSlots = useMemo(() => {
     const slots = [];
-    // 12:00 - 12:30
     slots.push("12:00", "12:30");
-    // 01:00 - 11:30
     for (let i = 1; i <= 11; i++) {
       slots.push(`${i.toString().padStart(2, '0')}:00`);
       slots.push(`${i.toString().padStart(2, '0')}:30`);
     }
-    // Sort? 12 needs to be handled if we want 1, 2, ... 12 order or 12, 1, 2...
-    // Let's standard sort: 01...12.
     return slots.sort();
   }, []);
 
-  // Helper to split current time value
   const [currentTimeVal, currentPeriod] = bookingDetails.time.includes(' ')
     ? bookingDetails.time.split(' ')
     : ['10:00', 'AM'];
@@ -83,22 +79,15 @@ export default function Marketplace() {
     const fetchInterviewers = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/interviewer');
-
         if (!response.ok) {
-          console.error("Server returned:", response.status);
-          setInterviewers([]); // Safety fallback
-          return;
-        }
-
-        const data = await response.json();
-
-        // CRASH PROTECTION: Check if data is actually an array
-        if (!Array.isArray(data)) {
-          console.error("Expected array but got:", data);
           setInterviewers([]);
           return;
         }
-
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+          setInterviewers([]);
+          return;
+        }
         const formattedData = data.map((item: any) => ({
           ...item,
           id: item._id || item.id,
@@ -108,7 +97,6 @@ export default function Marketplace() {
           title: item.title || 'Interviewer',
           yearsExperience: item.yearsExperience || 0
         }));
-
         setInterviewers(formattedData);
       } catch (error) {
         console.error("Error loading interviewers:", error);
@@ -116,7 +104,6 @@ export default function Marketplace() {
         setIsLoading(false);
       }
     };
-
     fetchInterviewers();
   }, []);
 
@@ -127,7 +114,6 @@ export default function Marketplace() {
 
   const filteredInterviewers = useMemo(() => {
     return interviewers.filter(interviewer => {
-      // Search
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
         const matches =
@@ -136,9 +122,7 @@ export default function Marketplace() {
           interviewer.skills?.some(s => s.toLowerCase().includes(query));
         if (!matches) return false;
       }
-      // Skills
       if (skillFilter && !interviewer.skills?.includes(skillFilter)) return false;
-      // Price
       if (priceFilter) {
         if (interviewer.hourlyRate < priceFilter.min || interviewer.hourlyRate > priceFilter.max) return false;
       }
@@ -149,6 +133,11 @@ export default function Marketplace() {
   const handleHire = (interviewer: Interviewer) => {
     setSelectedInterviewer(interviewer);
   };
+  
+  // NEW: Handle Message Click
+  const handleMessage = (interviewer: Interviewer) => {
+    navigate(`/chat?userId=${interviewer.id}`);
+  };
 
   // 3. Handle Booking Logic
   const handleBooking = async () => {
@@ -156,7 +145,6 @@ export default function Marketplace() {
       toast.error('Please fill in all required fields');
       return;
     }
-
     if (!user?.id) {
       toast.error("You must be logged in as a Company to book.");
       return;
@@ -170,7 +158,6 @@ export default function Marketplace() {
       formData.append('role', bookingDetails.role);
       formData.append('date', format(selectedDate, 'yyyy-MM-dd'));
       formData.append('time', bookingDetails.time);
-      // notes removed
       formData.append('description', bookingDetails.description);
       if (cvFile) {
         formData.append('cv', cvFile);
@@ -178,7 +165,6 @@ export default function Marketplace() {
 
       const response = await fetch('http://localhost:5000/api/interviews', {
         method: 'POST',
-        // headers: { 'Content-Type': 'multipart/form-data' }, // Let browser set boundary
         body: formData
       });
 
@@ -238,6 +224,7 @@ export default function Marketplace() {
               interviewer={interviewer}
               onHire={handleHire}
               onViewProfile={setViewingInterviewer}
+              onMessage={handleMessage} // Pass the message handler
               className={`animate-fade-in stagger-${(index % 5) + 1}`}
             />
           ))}
@@ -319,8 +306,8 @@ export default function Marketplace() {
           </div>
 
           <div className="flex gap-3 pt-4 border-t">
-            <Button variant="outline" className="flex-1" onClick={() => setViewingInterviewer(null)}>
-              Close
+             <Button variant="outline" className="flex-1" onClick={() => handleMessage(viewingInterviewer!)}>
+              <MessageSquare className="mr-2 h-4 w-4" /> Message
             </Button>
             <Button
               className="flex-1 btn-gradient shadow-lg"
@@ -334,20 +321,11 @@ export default function Marketplace() {
           </div>
         </DialogContent>
       </Dialog>
-
-      {!isLoading && filteredInterviewers.length === 0 && (
-        <div className="text-center py-12">
-          <Users className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-foreground">No interviewers found</h3>
-          <p className="text-muted-foreground mt-1">
-            Ensure backend is running and you have users with role "interviewer".
-          </p>
-        </div>
-      )}
-
-      {/* Booking Modal */}
+      
+      {/* Booking Modal (Keep existing code ...) */}
       <Dialog open={!!selectedInterviewer} onOpenChange={(open) => !open && setSelectedInterviewer(null)}>
-        <DialogContent className="sm:max-w-[800px]">
+        {/* ... (Keep existing booking modal content exactly as before) ... */}
+         <DialogContent className="sm:max-w-[800px]">
           <DialogHeader>
             <DialogTitle>Schedule Interview with {selectedInterviewer?.name}</DialogTitle>
             <DialogDescription>

@@ -11,9 +11,9 @@ import {
   ChevronRight,
   Sparkles,
   MessageSquare,
+  Briefcase
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Briefcase } from 'lucide-react'; // Import Icon
 
 interface SidebarProps {
   isOpen: boolean;
@@ -26,17 +26,18 @@ interface NavItem {
   href: string;
 }
 
-
 const companyNav: NavItem[] = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/company/dashboard' },
+  { label: 'Messages', icon: MessageSquare, href: '/chat' }, // Added Messages
   { label: 'Hire Interviewers', icon: Users, href: '/company/hire' },
-  { label: 'My Job Postings', icon: Briefcase, href: '/company/jobs' }, // New Item
+  { label: 'My Job Postings', icon: Briefcase, href: '/company/jobs' },
   { label: 'Interview History', icon: History, href: '/company/history' },
 ];
 
 const interviewerNav: NavItem[] = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/interviewer/dashboard' },
-  { label: 'Job Board', icon: Briefcase, href: '/interviewer/jobs' }, // New Item
+  { label: 'Messages', icon: MessageSquare, href: '/chat' }, // Added Messages
+  { label: 'Job Board', icon: Briefcase, href: '/interviewer/jobs' },
   { label: 'Profile Settings', icon: UserCog, href: '/interviewer/profile' },
 ];
 

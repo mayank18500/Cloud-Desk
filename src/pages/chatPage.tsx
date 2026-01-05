@@ -11,6 +11,7 @@ import { Send, Calendar, Clock, MessageSquare, Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
 import { getMediaUrl } from '@/lib/utils';
 import { AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/shared/Badge';
 
 export default function ChatPage() {
     const { user } = useAuth();
@@ -27,29 +28,63 @@ export default function ChatPage() {
     const [searchParams] = useSearchParams();
     const targetUserId = searchParams.get('userId');
 
-    // 1. Fetch User's Chats
+    // 1. Fetch User's Chats & Handle Direct Messaging
     useEffect(() => {
         if (!user?.id) return;
-        const fetchChats = async () => {
-            const res = await fetch(`http://localhost:5000/api/chats/user/${user.id}`);
-            if (res.ok) {
-                const data = await res.json();
-                setChats(data);
+        
+        const initChat = async () => {
+            try {
+                // Fetch all existing chats
+                const res = await fetch(`http://localhost:5000/api/chats/user/${user.id}`);
+                let userChats = [];
+                if (res.ok) {
+                    userChats = await res.json();
+                    setChats(userChats);
+                }
 
-                // Auto-select chat if query param exists
+                // If targetUserId exists, try to find or create the chat
                 if (targetUserId) {
-                    const targetChat = data.find((c: any) =>
-                        c.participants.some((p: any) => p._id === targetUserId)
+                    // Try to find in existing chats
+                    // Use loose comparison or toString() to match IDs safely
+                    const existingChat = userChats.find((c: any) =>
+                        c.participants.some((p: any) => 
+                            (p._id === targetUserId) || (p._id?.toString() === targetUserId)
+                        )
                     );
-                    if (targetChat) {
-                        setActiveChat(targetChat);
+
+                    if (existingChat) {
+                        setActiveChat(existingChat);
+                    } else {
+                        // Chat doesn't exist? Create/Fetch it via /start endpoint
+                        const startRes = await fetch(`http://localhost:5000/api/chats/start`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ senderId: user.id, receiverId: targetUserId })
+                        });
+
+                        if (startRes.ok) {
+                            const newChatData = await startRes.json();
+                            setChats(prev => [newChatData, ...prev]);
+                            setActiveChat(newChatData);
+                        }
                     }
                 }
+            } catch (error) {
+                console.error("Error initializing chat:", error);
             }
         };
-        fetchChats();
-        // Poll for new chats/messages every 5 seconds
-        const interval = setInterval(fetchChats, 5000);
+
+        initChat();
+
+        // Poll for new messages every 5 seconds
+        const interval = setInterval(async () => {
+             const res = await fetch(`http://localhost:5000/api/chats/user/${user.id}`);
+             if (res.ok) {
+                 const data = await res.json();
+                 setChats(data);
+             }
+        }, 5000);
+
         return () => clearInterval(interval);
     }, [user, targetUserId]);
 
@@ -152,7 +187,7 @@ export default function ChatPage() {
                             <div className="flex items-center gap-3">
                                 <Avatar className="h-8 w-8">
                                     <AvatarImage src={getMediaUrl(activeChat.participants.find((p: any) => p._id !== user?.id)?.avatar)} />
-                                    <AvatarFallback>{activeChat.participants.find((p: any) => p._id !== user?.id)?.name[0]}</AvatarFallback>
+                                    <AvatarFallback>{activeChat.participants.find((p: any) => p._id !== user?.id)?.name?.[0]}</AvatarFallback>
                                 </Avatar>
                                 <div>
                                     <p className="font-medium">{activeChat.participants.find((p: any) => p._id !== user?.id)?.name}</p>
@@ -225,5 +260,3 @@ export default function ChatPage() {
         </div>
     );
 }
-
-import { Badge } from '@/components/shared/Badge';

@@ -1,7 +1,7 @@
 import { Badge, SkillTag } from '@/components/shared/Badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Clock, CheckCircle, ArrowRight } from 'lucide-react';
+import { Clock, CheckCircle, ArrowRight, MessageSquare } from 'lucide-react';
 import { cn, getMediaUrl } from '@/lib/utils';
 
 export interface Interviewer {
@@ -21,10 +21,11 @@ interface InterviewerCardProps {
   interviewer: Interviewer;
   onHire: (interviewer: Interviewer) => void;
   onViewProfile?: (interviewer: Interviewer) => void;
+  onMessage?: (interviewer: Interviewer) => void;
   className?: string;
 }
 
-export function InterviewerCard({ interviewer, onHire, onViewProfile, className }: InterviewerCardProps) {
+export function InterviewerCard({ interviewer, onHire, onViewProfile, onMessage, className }: InterviewerCardProps) {
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -72,7 +73,6 @@ export function InterviewerCard({ interviewer, onHire, onViewProfile, className 
       </div>
 
       <div className="mt-4 flex items-center gap-4 text-sm">
-
         <div className="flex items-center gap-1.5 text-muted-foreground">
           <Clock className="h-4 w-4" />
           <span>{interviewer.yearsExperience} yrs exp</span>
@@ -97,13 +97,23 @@ export function InterviewerCard({ interviewer, onHire, onViewProfile, className 
           <span className="text-2xl font-black font-mono text-gradient-primary">₹{interviewer.hourlyRate}</span>
           <span className="text-muted-foreground text-sm">/hr</span>
         </div>
-        <Button
-          onClick={() => onHire(interviewer)}
-          className="btn-gradient rounded-xl gap-2 group/btn"
-        >
-          Hire Now
-          <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-        </Button>
+        <div className="flex gap-2">
+            <Button
+                size="icon"
+                variant="outline"
+                className="rounded-xl border-primary/20 text-primary hover:text-primary hover:bg-primary/10"
+                onClick={() => onMessage?.(interviewer)}
+            >
+                <MessageSquare className="h-4 w-4" />
+            </Button>
+            <Button
+            onClick={() => onHire(interviewer)}
+            className="btn-gradient rounded-xl gap-2 group/btn"
+            >
+            Hire Now
+            <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+            </Button>
+        </div>
       </div>
     </div>
   );

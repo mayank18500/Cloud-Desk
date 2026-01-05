@@ -7,7 +7,6 @@ const router = express.Router();
 
 // ... (Keep existing Create/Get routes) ...
 router.post('/', async (req, res) => {
-    // ... (Same as before)
     try {
         const { companyId, title, description, requirements, budget } = req.body;
         const newJob = new Job({ companyId, title, description, requirements, budget });
@@ -53,7 +52,7 @@ router.post('/:id/apply', async (req, res) => {
     }
 });
 
-// === UPDATED SELECTION LOGIC ===
+// Select Applicant Logic
 router.put('/:id/select', async (req, res) => {
   try {
     const { interviewerId } = req.body;
@@ -64,15 +63,15 @@ router.put('/:id/select', async (req, res) => {
         applicant.status = 'selected';
         await job.save();
 
-        // 1. Create Interview Record (Status: pending_schedule)
+        // 1. Create Interview Record
         const newInterview = new Interview({
             companyId: job.companyId,
             interviewerId: interviewerId,
-            role: job.title, // Use Job Title as role
-            candidateName: "Pending Assignment", // Or generic placeholder
+            role: job.title, 
+            candidateName: "Pending Assignment",
             date: "TBD",
             time: "TBD",
-            status: "pending_schedule" // Special status
+            status: "pending" // Changed to match enum usually used
         });
         await newInterview.save();
 
@@ -81,8 +80,9 @@ router.put('/:id/select', async (req, res) => {
             participants: [job.companyId, interviewerId],
             interviewId: newInterview._id,
             messages: [{
-                // System message
-                text: `Welcome! This chat is connected to the job "${job.title}". Please discuss and schedule the interview.`
+                sender: job.companyId,
+                text: `SYSTEM: Job Offer for "${job.title}" has been sent.`,
+                createdAt: new Date()
             }]
         });
         await newChat.save();
@@ -93,6 +93,17 @@ router.put('/:id/select', async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Error selecting applicant' });
   }
+});
+
+// NEW: Delete Job
+router.delete('/:id', async (req, res) => {
+    try {
+        const job = await Job.findByIdAndDelete(req.params.id);
+        if (!job) return res.status(404).json({ message: 'Job not found' });
+        res.json({ message: 'Job deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting job' });
+    }
 });
 
 export default router;
