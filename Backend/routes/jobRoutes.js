@@ -1,5 +1,5 @@
 import express from 'express';
-import Job from '../model/Job.js';
+import Job from '../model/job.js';
 import Interview from '../model/interview.js';
 import Chat from '../model/chat.js';
 
