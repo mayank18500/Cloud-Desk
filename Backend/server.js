@@ -46,7 +46,7 @@ app.use("/api/interviewer", interviewerRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/chats", chatRoutes);
-app.get('*', (req, res) => {
+app.get(/(.*)/, (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
