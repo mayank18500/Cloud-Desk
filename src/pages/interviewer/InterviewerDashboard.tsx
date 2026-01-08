@@ -5,6 +5,7 @@ import { Badge } from '@/components/shared/Badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { Inbox, Calendar, FileText, Star, Video } from 'lucide-react';
+import { redirect } from 'react-router-dom';
 
 export default function InterviewerDashboard() {
   const { user } = useAuth();
@@ -116,7 +117,7 @@ export default function InterviewerDashboard() {
                 cv={interview.cv}
                 description={interview.description}
                 status={interview.status}
-                onStart={() => toast.success("Starting video call...")}
+                onStart={() => window.open(`https://cloud-desk-ytb7.onrender.com`,`_blank`)}
               />
             ))}
           </div>
