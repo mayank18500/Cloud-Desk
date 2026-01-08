@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader } from '@/components/shared/Loader';
+import { API_URL } from '@/lib/api';
 
 export default function Register() {
   const { register, isLoading: authLoading } = useAuth();

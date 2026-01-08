@@ -27,6 +27,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
 import { getMediaUrl } from '@/lib/utils';
+import { API_URL } from '@/lib/api';
 
 export default function Marketplace() {
   const { user } = useAuth();
@@ -78,7 +79,7 @@ export default function Marketplace() {
   useEffect(() => {
     const fetchInterviewers = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/interviewer');
+        const response = await fetch('${API_URL}/api/interviewer');
         if (!response.ok) {
           setInterviewers([]);
           return;
@@ -163,7 +164,7 @@ export default function Marketplace() {
         formData.append('cv', cvFile);
       }
 
-      const response = await fetch('http://localhost:5000/api/interviews', {
+      const response = await fetch('${API_URL}/api/interviews', {
         method: 'POST',
         body: formData
       });

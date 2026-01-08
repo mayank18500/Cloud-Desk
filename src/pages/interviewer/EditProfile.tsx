@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { Save, Plus, X, FileText } from 'lucide-react';
 import { getMediaUrl } from '@/lib/utils';
+import { API_URL } from '@/lib/api';
 
 export default function EditProfile() {
   const { user, updateUser } = useAuth();
@@ -35,7 +36,7 @@ export default function EditProfile() {
     const fetchProfile = async () => {
       if (!user?.id) return;
       try {
-        const response = await fetch(`http://localhost:5000/api/users/${user.id}`);
+        const response = await fetch(`${API_URL}/api/users/${user.id}`);
         if (response.ok) {
           const userData = await response.json();
           setProfile({
@@ -85,7 +86,7 @@ export default function EditProfile() {
       if (avatarFile) formData.append('avatar', avatarFile);
       if (cvFile) formData.append('cv', cvFile);
 
-      const response = await fetch(`http://localhost:5000/api/users/${user.id}`, {
+      const response = await fetch(`${API_URL}/api/users/${user.id}`, {
         method: 'PUT',
         body: formData,
       });

@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader } from '@/components/shared/Loader';
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
+import { API_URL } from '@/lib/api';
 
 export default function LoginPage() {
   const { login, isLoading: authLoading } = useAuth();

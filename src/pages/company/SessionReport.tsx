@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { History, Calendar, Clock, CheckCircle, XCircle, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { API_URL } from '@/lib/api';
 
 export default function SessionReport() {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ export default function SessionReport() {
     const fetchHistory = async () => {
       if (!user?.id) return;
       try {
-        const response = await fetch(`http://localhost:5000/api/interviews/user/${user.id}?type=company`);
+        const response = await fetch(`${API_URL}/api/interviews/user/${user.id}?type=company`);
         if (response.ok) {
           const data = await response.json();
           // Sort by date (newest first)

@@ -5,13 +5,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { Badge } from '@/components/shared/Badge';
 import { Building2, IndianRupee, Briefcase } from 'lucide-react';
+import { API_URL } from '@/lib/api';
 
 export default function JobBoard() {
     const { user } = useAuth();
     const [jobs, setJobs] = useState<any[]>([]);
 
     const fetchJobs = async () => {
-        const res = await fetch('http://localhost:5000/api/jobs');
+        const res = await fetch('${API_URL}/api/jobs');
         if (res.ok) setJobs(await res.json());
     };
 
@@ -20,7 +21,7 @@ export default function JobBoard() {
     const handleApply = async (jobId: string) => {
         if (!user?.id) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/jobs/${jobId}/apply`, {
+            const res = await fetch(`${API_URL}/api/jobs/${jobId}/apply`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ interviewerId: user.id })

@@ -18,6 +18,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
+import { API_URL } from '@/lib/api';
 
 export default function PostJob() {
     const { user } = useAuth();
@@ -32,7 +33,7 @@ export default function PostJob() {
 
     const fetchCompanyJobs = async () => {
         if (!user?.id) return;
-        const res = await fetch(`http://localhost:5000/api/jobs/company/${user.id}`);
+        const res = await fetch(`${API_URL}/api/jobs/company/${user.id}`);
         if (res.ok) setJobs(await res.json());
     };
 
@@ -43,7 +44,7 @@ export default function PostJob() {
         if (!user?.id) return;
 
         try {
-            const res = await fetch('http://localhost:5000/api/jobs', {
+            const res = await fetch('${API_URL}/api/jobs', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -69,7 +70,7 @@ export default function PostJob() {
     const handleDelete = async (jobId: string) => {
         if (!confirm("Are you sure you want to delete this job posting?")) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/jobs/${jobId}`, {
+            const res = await fetch(`${API_URL}/api/jobs/${jobId}`, {
                 method: 'DELETE'
             });
             if (res.ok) {
@@ -85,7 +86,7 @@ export default function PostJob() {
 
     const handleSelectApplicant = async (jobId: string, interviewerId: string) => {
         try {
-             const res = await fetch(`http://localhost:5000/api/jobs/${jobId}/select`, {
+             const res = await fetch(`${API_URL}/api/jobs/${jobId}/select`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ interviewerId })

@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { getMediaUrl } from '@/lib/utils';
 import { AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/shared/Badge';
+import { API_URL } from '@/lib/api';
 
 export default function ChatPage() {
     const { user } = useAuth();
@@ -35,7 +36,7 @@ export default function ChatPage() {
         const initChat = async () => {
             try {
                 // Fetch all existing chats
-                const res = await fetch(`http://localhost:5000/api/chats/user/${user.id}`);
+                const res =await fetch(`${API_URL}/api/chats/user/${user.id}`);
                 let userChats = [];
                 if (res.ok) {
                     userChats = await res.json();
@@ -56,7 +57,7 @@ export default function ChatPage() {
                         setActiveChat(existingChat);
                     } else {
                         // Chat doesn't exist? Create/Fetch it via /start endpoint
-                        const startRes = await fetch(`http://localhost:5000/api/chats/start`, {
+                        const startRes =await fetch(`${API_URL}/api//chats/start`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ senderId: user.id, receiverId: targetUserId })
@@ -78,7 +79,7 @@ export default function ChatPage() {
 
         // Poll for new messages every 5 seconds
         const interval = setInterval(async () => {
-             const res = await fetch(`http://localhost:5000/api/chats/user/${user.id}`);
+             const res = await fetch(`${API_URL}/api/chats/user/${user.id}`);
              if (res.ok) {
                  const data = await res.json();
                  setChats(data);
@@ -100,7 +101,7 @@ export default function ChatPage() {
         if (!newMessage.trim() || !activeChat) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/chats/${activeChat._id}/message`, {
+            const res = await fetch(`${API_URL}/api/chats/${activeChat._id}/message`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ senderId: user?.id, text: newMessage })
@@ -122,7 +123,7 @@ export default function ChatPage() {
         if (!scheduleDate || !scheduleTime || !activeChat?.interviewId) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/chats/schedule/${activeChat.interviewId._id}`, {
+            const res = await fetch(`${API_URL}/api/chats/schedule/${activeChat.interviewId._id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ date: scheduleDate, time: scheduleTime })
@@ -131,7 +132,7 @@ export default function ChatPage() {
             if (res.ok) {
                 toast.success("Interview Scheduled!");
                 // Send system message about scheduling
-                await fetch(`http://localhost:5000/api/chats/${activeChat._id}/message`, {
+                await fetch(`${API_URL}/api/chats/${activeChat._id}/message`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

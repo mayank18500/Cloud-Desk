@@ -8,6 +8,7 @@ import { Users, Video, IndianRupee, TrendingUp, Plus, ArrowRight, Calendar, Cloc
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { getMediaUrl } from '@/lib/utils';
+import { API_URL } from '@/lib/api';
 
 export default function CompanyDashboard() {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ export default function CompanyDashboard() {
       if (!user?.id) return;
       try {
         // Fetch interviews where the companyId matches the logged-in user
-        const response = await fetch(`http://localhost:5000/api/interviews/user/${user.id}?type=company`);
+        const response = await fetch(`${API_URL}/api/interviews/user/${user.id}?type=company`);
         if (response.ok) {
           const data = await response.json();
           setInterviews(data);

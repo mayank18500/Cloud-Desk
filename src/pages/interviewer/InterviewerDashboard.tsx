@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { Inbox, Calendar, FileText, Star, Video } from 'lucide-react';
 import { redirect } from 'react-router-dom';
+import { API_URL } from '@/lib/api';
 
 export default function InterviewerDashboard() {
   const { user } = useAuth();
@@ -16,7 +17,7 @@ export default function InterviewerDashboard() {
   const fetchInterviews = async () => {
     if (!user?.id) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/interviews/user/${user.id}?type=interviewer`);
+      const response = await fetch(`${API_URL}/api/interviews/user/${user.id}?type=interviewer`);
       if (response.ok) {
         const data = await response.json();
         console.log("InterviewerDashboard: Received data:", data);
@@ -40,7 +41,7 @@ export default function InterviewerDashboard() {
 
   const handleStatusUpdate = async (id: string, newStatus: string) => {
     try {
-      await fetch(`http://localhost:5000/api/interviews/${id}/status`, {
+      await fetch(`${API_URL}/api/interviews/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
