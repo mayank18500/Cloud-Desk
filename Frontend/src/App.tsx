@@ -1,29 +1,29 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "./components/ui/toaster";
+import { Toaster as Sonner } from "./components/ui/sonner";
+import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { MainLayout } from "@/layouts/MainLayout";
+import { AuthProvider } from "./contexts/AuthContext";
+import { MainLayout } from "./layouts/MainLayout";
 
 // Pages
-import Register from "@/pages/Register";
-import LoginPage from "@/pages/LoginPage";
-import OnboardingPage from "@/pages/OnboardingPage";
-import NotFound from "@/pages/NotFound";
+import Register from "./pages/Register";
+import LoginPage from "./pages/LoginPage";
+import OnboardingPage from "./pages/OnboardingPage";
+import NotFound from "./pages/NotFound";
 
 // Company Pages
-import CompanyDashboard from "@/pages/company/CompanyDashboard";
-import Marketplace from "@/pages/company/Marketplace";
-import SessionReport from "@/pages/company/SessionReport";
-import PostJob from "@/pages/company/PostJob";
+import CompanyDashboard from "./pages/company/CompanyDashboard";
+import Marketplace from "./pages/company/Marketplace";
+import SessionReport from "./pages/company/SessionReport";
+import PostJob from "./pages/company/PostJob";
 
 // Interviewer Pages
-import InterviewerDashboard from "@/pages/interviewer/InterviewerDashboard";
-import EditProfile from "@/pages/interviewer/EditProfile";
-import JobBoard from "@/pages/interviewer/JobBoard";
+import InterviewerDashboard from "./pages/interviewer/InterviewerDashboard";
+import EditProfile from "./pages/interviewer/EditProfile";
+import JobBoard from "./pages/interviewer/JobBoard";
 
-import ChatPage from "@/pages/chatPage";
+import ChatPage from "./pages/chatPage";
 
 const queryClient = new QueryClient();
 
