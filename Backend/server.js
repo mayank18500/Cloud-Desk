@@ -32,10 +32,6 @@ app.use('/uploads', express.static('uploads'));
 
 // Default Route
 
-app.get("/", (req, res) => {
-    res.status(200).send("Cloud-Desk Backend Server is Running");
-});
-
 // API Routes
 app.use("/api/auth", authRoutes);
 //app.use("/api/interviewers", interviewerRoutes);
