@@ -1,0 +1,11 @@
+{
+  "name": "cloud-desk-root",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm install --prefix Frontend && npm run build --prefix Frontend && npm install --prefix Backend",
+    "start": "npm start --prefix Backend"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

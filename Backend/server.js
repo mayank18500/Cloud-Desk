@@ -24,7 +24,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Middleware
-app.use(express.static(path.join(__dirname, '../dist')));
+app.use(express.static(path.join(__dirname, '../Frontend/dist'))); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -46,8 +46,9 @@ app.use("/api/interviewer", interviewerRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/chats", chatRoutes);
+
 app.get(/(.*)/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+  res.sendFile(path.join(__dirname, '../Frontend/dist/index.html'));
 });
 
 app.listen(PORT, () => {
