@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../../components/ui/card';
+import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'sonner';
-import { Badge } from '@/components/shared/Badge';
+import { Badge } from '../../components/shared/Badge';
 import { Building2, IndianRupee, Briefcase } from 'lucide-react';
-import { API_URL } from '@/lib/api';
+import { API_URL } from '../../lib/api';
 
 export default function JobBoard() {
     const { user } = useAuth();

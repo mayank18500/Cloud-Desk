@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/shared/Badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '../../components/ui/button';
+import { Badge } from '../../components/shared/Badge';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
+import { useAuth } from '../../contexts/AuthContext';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '../../components/ui/dialog';
 import { History, Calendar, Clock, CheckCircle, XCircle, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { API_URL } from '@/lib/api';
+import { API_URL } from '../../lib/api';
 
 export default function SessionReport() {
   const { user } = useAuth();

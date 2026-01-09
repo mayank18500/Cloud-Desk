@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { StatCard } from '@/components/dashboard/StatCard';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/shared/Badge';
-import { useAuth } from '@/contexts/AuthContext';
+import { StatCard } from '../../components/dashboard/StatCard';
+import { Button } from '../../components/ui/button';
+import { Badge } from '../../components/shared/Badge';
+import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { Users, Video, IndianRupee, TrendingUp, Plus, ArrowRight, Calendar, Clock, MessageSquare } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
 import { toast } from 'sonner';
-import { getMediaUrl } from '@/lib/utils';
-import { API_URL } from '@/lib/api';
+import { getMediaUrl } from '../../lib/utils';
+import { API_URL } from '../../lib/api';
 
 export default function CompanyDashboard() {
   const { user } = useAuth();

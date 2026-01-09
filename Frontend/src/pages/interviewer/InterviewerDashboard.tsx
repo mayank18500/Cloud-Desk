@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { StatCard } from '@/components/dashboard/StatCard';
-import { RequestRow } from '@/components/dashboard/RequestRow';
-import { Badge } from '@/components/shared/Badge';
-import { useAuth } from '@/contexts/AuthContext';
+import { StatCard } from '../../components/dashboard/StatCard';
+import { RequestRow } from '../../components/dashboard/RequestRow';
+import { Badge } from '../../components/shared/Badge';
+import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'sonner';
 import { Inbox, Calendar, FileText, Star, Video } from 'lucide-react';
 import { redirect } from 'react-router-dom';
-import { API_URL } from '@/lib/api';
+import { API_URL } from '../../lib/api';
 
 export default function InterviewerDashboard() {
   const { user } = useAuth();

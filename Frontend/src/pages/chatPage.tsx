@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
+import { useAuth } from '../contexts/AuthContext';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Avatar, AvatarFallback } from '../components/ui/avatar';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Label } from '../components/ui/label';
 import { Send, Calendar, Clock, MessageSquare, Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
-import { getMediaUrl } from '@/lib/utils';
-import { AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/shared/Badge';
-import { API_URL } from '@/lib/api';
+import { getMediaUrl } from '../lib/utils';
+import { AvatarImage } from '../components/ui/avatar';
+import { Badge } from '../components/shared/Badge';
+import { API_URL } from '../lib/api';
 
 export default function ChatPage() {
     const { user } = useAuth();

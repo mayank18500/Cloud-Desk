@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import User from '../Backend/model/User.js';
+import User from '../../Backend/model/User.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 

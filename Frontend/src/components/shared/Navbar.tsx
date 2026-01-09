@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/shared/Badge';
+import { useAuth } from '../../contexts/AuthContext';
+import { Button } from '../../components/ui/button';
+import { Badge } from '../../components/shared/Badge';
 import {
   Menu,
   LogOut,
@@ -19,9 +19,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { getMediaUrl } from '@/lib/utils';
+} from '../../components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
+import { getMediaUrl } from '../../lib/utils';
 import { DeleteAccountModal } from './DeleteAccountModal';
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react';

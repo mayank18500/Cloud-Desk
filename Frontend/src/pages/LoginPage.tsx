@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useAuth } from '../contexts/AuthContext';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
-import { Loader } from '@/components/shared/Loader';
+import { Loader } from '../components/shared/Loader';
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
-import { API_URL } from '@/lib/api';
+import { API_URL } from '../lib/api';
 
 export default function LoginPage() {
   const { login, isLoading: authLoading } = useAuth();

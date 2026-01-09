@@ -1,8 +1,8 @@
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/shared/Badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '../../components/ui/button';
+import { Badge } from '../../components/shared/Badge';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
 import { Calendar, Clock, Check, X, ExternalLink, FileText, MessageSquare } from 'lucide-react';
-import { cn, getMediaUrl } from '@/lib/utils';
+import { cn, getMediaUrl } from '../../lib/utils';
 import { Link } from 'react-router-dom';
 
 interface RequestRowProps {

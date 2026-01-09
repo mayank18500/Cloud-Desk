@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { cn } from '@/lib/utils';
+import { useAuth } from '../../contexts/AuthContext';
+import { cn } from '../../lib/utils';
 import {
   LayoutDashboard,
   Users,
@@ -13,7 +13,7 @@ import {
   MessageSquare,
   Briefcase
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../components/ui/button';
 
 interface SidebarProps {
   isOpen: boolean;

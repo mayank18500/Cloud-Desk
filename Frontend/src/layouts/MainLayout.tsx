@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Navbar } from '@/components/shared/Navbar';
-import { Sidebar } from '@/components/shared/Sidebar';
-import { PageLoader } from '@/components/shared/Loader';
+import { useAuth } from '../contexts/AuthContext';
+import { Navbar } from '../components/shared/Navbar';
+import { Sidebar } from '../components/shared/Sidebar';
+import { PageLoader } from '../components/shared/Loader';
 
 export function MainLayout() {
   const { isAuthenticated, isLoading, role } = useAuth();

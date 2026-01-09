@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 import { CheckCircle, Building2, User, Star, Zap } from 'lucide-react';
 
 interface BadgeProps {

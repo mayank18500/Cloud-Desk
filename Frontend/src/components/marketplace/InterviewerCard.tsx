@@ -1,8 +1,8 @@
-import { Badge, SkillTag } from '@/components/shared/Badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { Badge, SkillTag } from '../../components/shared/Badge';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
+import { Button } from '../../components/ui/button';
 import { Clock, CheckCircle, ArrowRight, MessageSquare } from 'lucide-react';
-import { cn, getMediaUrl } from '@/lib/utils';
+import { cn, getMediaUrl } from '../../lib/utils';
 
 export interface Interviewer {
   id: string;

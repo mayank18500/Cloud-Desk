@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth, UserRole } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import { useAuth, UserRole } from '../contexts/AuthContext';
+import { Button } from '../components/ui/button';
 import { Building2, User, ArrowRight, CheckCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { API_URL } from '@/lib/api';
+import { cn } from '../lib/utils';
+import { API_URL } from '../lib/api';
 
 export default function OnboardingPage() {
   const { setRole } = useAuth();

@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
+import { useAuth } from '../../contexts/AuthContext';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../../components/ui/card';
+import { Label } from '../../components/ui/label';
 import { toast } from 'sonner';
 import { Briefcase, Plus, Users, Trash2 } from 'lucide-react'; // Import Trash2
-import { Badge } from '@/components/shared/Badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { getMediaUrl } from '@/lib/utils';
+import { Badge } from '../../components/shared/Badge';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
+import { getMediaUrl } from '../../lib/utils';
 import {
     Dialog,
     DialogContent,
@@ -17,8 +17,8 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/components/ui/dialog';
-import { API_URL } from '@/lib/api';
+} from '../../components/ui/dialog';
+import { API_URL } from '../../lib/api';
 
 export default function PostJob() {
     const { user } = useAuth();
