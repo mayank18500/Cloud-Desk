@@ -12,7 +12,7 @@ export default function JobBoard() {
     const [jobs, setJobs] = useState<any[]>([]);
 
     const fetchJobs = async () => {
-        const res = await fetch('${API_URL}/api/jobs');
+        const res = await fetch(`${API_URL}/api/jobs`);
         if (res.ok) setJobs(await res.json());
     };
 
