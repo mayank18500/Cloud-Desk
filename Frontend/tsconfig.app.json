@@ -26,5 +26,5 @@
       "@/*": ["Frontend/src/*"]
     }
   },
-  "include": ["Frontend/src"]
+  "include": ["src"]
 }
