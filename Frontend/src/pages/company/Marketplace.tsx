@@ -79,7 +79,7 @@ export default function Marketplace() {
   useEffect(() => {
     const fetchInterviewers = async () => {
       try {
-        const response = await fetch('${API_URL}/api/interviewer');
+        const response = await fetch(`${API_URL}/api/interviewer`);
         if (!response.ok) {
           setInterviewers([]);
           return;
