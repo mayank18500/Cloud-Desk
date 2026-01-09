@@ -6,7 +6,7 @@ import { Textarea } from '../../components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../../components/ui/card';
 import { Label } from '../../components/ui/label';
 import { toast } from 'sonner';
-import { Briefcase, Plus, Users, Trash2 } from 'lucide-react'; // Import Trash2
+import { Briefcase, Plus, Users, Trash2 } from 'lucide-react';
 import { Badge } from '../../components/shared/Badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
 import { getMediaUrl } from '../../lib/utils';
@@ -28,7 +28,7 @@ export default function PostJob() {
     // Form State
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [requirements, setRequirements] = useState(''); // Comma separated
+    const [requirements, setRequirements] = useState('');
     const [budget, setBudget] = useState('');
 
     const fetchCompanyJobs = async () => {
@@ -44,7 +44,8 @@ export default function PostJob() {
         if (!user?.id) return;
 
         try {
-            const res = await fetch('${API_URL}/api/jobs', {
+            // FIX 1: Use backticks (`) here
+            const res = await fetch(`${API_URL}/api/jobs`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -165,7 +166,8 @@ export default function PostJob() {
                                                      <p className="text-xs text-muted-foreground">{app.interviewerId?.title}</p>
                                                  </div>
                                              </div>
-                                             {app.status === 'applied' ? (
+                                             {/* FIX 2: Check for 'pending' status */}
+                                             {app.status === 'pending' ? (
                                                  <Button size="sm" variant="outline" onClick={() => handleSelectApplicant(job._id, app.interviewerId?._id)}>Select</Button>
                                              ) : (
                                                  <Badge variant="success">Selected</Badge>
